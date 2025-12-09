@@ -1,0 +1,231 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% set bg = '' %}
+{% if kind == 'doctors' %}{% set bg = '/assets/TOR1.jpg' %}{% endif %}
+{% if kind == 'appointments' %}{% set bg = '/assets/HMS1.jpg' %}{% endif %}
+{% if kind == 'diagnoses' %}{% set bg = '/assets/ZZZZZZZZZZZZZZZZ.jpg' %}{% endif %}
+{% if kind == 'prescriptions' %}{% set bg = '/assets/HMS1.jpg' %}{% endif %}
+{% if kind == 'medical_store' %}{% set bg = '/assets/TOR1.jpg' %}{% endif %}
+{% if kind == 'accounts' %}{% set bg = '/assets/ZZZZZZZZZZZZZZZZ.jpg' %}{% endif %}
+{% if kind == 'audit' or kind == 'incidents' %}{% set bg = '/assets/ZZZZZZZZZZZZZZZZ.jpg' %}{% endif %}
+{% if kind == 'assets' %}{% set bg = '/assets/ZZZZZZZZZZZZZZZZ.jpg' %}{% endif %}
+{% if kind == 'threats' %}{% set bg = '/assets/ZZZZZZZZZZZZZZZZ.jpg' %}{% endif %}
+{% if bg %}<div class="bg-full" style="background-image:url('{{ bg }}')"></div>{% endif %}
+
+<h2 class="glass-title">
+  {% if kind == 'assets' %}
+  Assets Inventory Records
+  {% elif kind == 'threats' %}
+  Threats Vulnerability Matrix
+  {% elif kind == 'patients_db' %}
+  Patients
+  {% else %}
+  {{ kind|capitalize }} Records
+  {% endif %}
+</h2>
+<div class="toolbar">
+  <a class="btn grey highlight" href="{{ url_for('export_csv', kind=kind) }}">Export CSV</a>
+  {% if kind == 'patients' %}
+  <a class="btn" href="{{ url_for('biometric') }}">Verify Authentication</a>
+  {% endif %}
+  {% if can_edit %}
+  <a class="btn secondary highlight" href="{{ url_for('list_view', kind=kind, edit=(0 if edit_mode else 1)) }}">{{ 'Exit
+    Edit Mode' if edit_mode else 'Enter Edit Mode' }}</a>
+  {% endif %}
+  {% if can_edit and edit_mode %}
+  <a class="btn primary highlight" href="{{ url_for('add_view', kind=kind) }}">Add Record</a>
+  {% endif %}
+
+  {% if kind == 'patients_db' %}
+  {% if encrypted %}
+  <form method="post" action="{{ url_for('patients_db_decrypt') }}" style="display:inline;">
+    <button class="btn secondary highlight" type="submit">Decrypt All</button>
+  </form>
+  {% else %}
+  <form method="post" action="{{ url_for('patients_db_encrypt') }}" style="display:inline;">
+    <button class="btn secondary highlight" type="submit">Encrypt All</button>
+  </form>
+  {% endif %}
+  {% endif %}
+  {% if kind == 'diagnoses' %}
+  {% if encrypted %}
+  <form method="post" action="{{ url_for('diagnoses_decrypt_all') }}" style="display:inline;">
+    <button class="btn secondary highlight" type="submit">Decrypt All</button>
+  </form>
+  {% else %}
+  <form method="post" action="{{ url_for('diagnoses_encrypt_all') }}" style="display:inline;">
+    <button class="btn secondary highlight" type="submit">Encrypt All</button>
+  </form>
+  {% endif %}
+  {% endif %}
+  {% if kind == 'prescriptions' %}
+  {% if encrypted %}
+  <form method="post" action="{{ url_for('prescriptions_decrypt_all') }}" style="display:inline;">
+    <button class="btn secondary highlight" type="submit">Decrypt All</button>
+  </form>
+  {% else %}
+  <form method="post" action="{{ url_for('prescriptions_encrypt_all') }}" style="display:inline;">
+    <button class="btn secondary highlight" type="submit">Encrypt All</button>
+  </form>
+  {% endif %}
+  {% endif %}
+  {% if kind == 'appointments' %}
+  {% if encrypted %}
+  <form method="post" action="{{ url_for('appointments_decrypt_all') }}" style="display:inline;">
+    <button class="btn secondary highlight" type="submit">Decrypt All</button>
+  </form>
+  {% else %}
+  <form method="post" action="{{ url_for('appointments_encrypt_all') }}" style="display:inline;">
+    <button class="btn secondary highlight" type="submit">Encrypt All</button>
+  </form>
+  {% endif %}
+  {% endif %}
+</div>
+
+<div class="table-wrap">
+  <table class="table">
+    <thead>
+      <tr>
+        {% for col in columns %}
+        <th>{{ col }}</th>
+        {% endfor %}
+        {% for ecol in extra_columns or [] %}
+        <th>{{ ecol }}</th>
+        {% endfor %}
+        {% if kind not in ['threats', 'bia', 'assets'] %}
+        <th>Actions</th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% if items|length == 0 %}
+      <tr>
+        <td colspan="{{ columns|length + (1 if kind not in ['threats', 'bia', 'assets'] else 0) }}"
+          style="text-align:center; padding:24px;">
+          {% if can_edit and edit_mode %}
+          <p style="margin:0 0 12px;">No records found. Click "Add Record" to create your first entry.</p>
+          {% elif can_edit %}
+          <p style="margin:0 0 12px;">No records found. Click "Enter Edit Mode" to add new records.</p>
+          {% else %}
+          <p style="margin:0;">No records found. You don't have permission to add records to this table.</p>
+          {% endif %}
+        </td>
+      </tr>
+      {% endif %}
+      {% for item in items %}
+      <tr>
+        {% for col in columns %}
+        {% set value = item.get(col, '') %}
+        <td>{{ value }}</td>
+        {% endfor %}
+        {% if extra_rows %}
+        {% set erow = extra_rows[loop.index0] %}
+        {% for v in erow %}
+        <td>{{ v }}</td>
+        {% endfor %}
+        {% endif %}
+        {% if kind not in ['threats', 'bia', 'assets'] %}
+        <td class="actions">
+          {% if edit_mode %}
+          <a class="btn" href="{{ url_for('edit_view', kind=kind, index=loop.index0) }}">Edit</a>
+          {% endif %}
+          {% if kind == 'patients' %}
+          <a class="btn" href="{{ url_for('patients_decrypt', index=loop.index0) }}">Decrypt</a>
+          <form method="post" action="{{ url_for('patients_encrypt', index=loop.index0) }}" style="display:inline;">
+            <button class="btn secondary" type="submit">Encrypt</button>
+          </form>
+          {% endif %}
+          {% if kind == 'patients_db' and not edit_mode %}
+          <span title="View-only">Read-only</span>
+          {% elif allow_delete and edit_mode %}
+          <form method="post" action="{{ url_for('delete_view', kind=kind, index=loop.index0) }}"
+            onsubmit="return confirm('Delete this record?');" style="display:inline;">
+            <button class="btn danger" type="submit">Delete</button>
+          </form>
+          {% elif not edit_mode %}
+          <span title="View-only">Read-only</span>
+          {% endif %}
+        </td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if kind == 'incidents' %}
+<div class="card" style="margin-top: 16px; padding: 16px; max-width: 980px;">
+  <h3 style="margin-top:0; margin-bottom:8px;">Ransomware Incident Timeline &amp; Actions (TCGH-IR-2025-014)</h3>
+  <h4 style="margin: 8px 0 4px;">Incident Timeline</h4>
+  <div class="table-wrap" style="max-height: 260px; overflow:auto;">
+    <table class="table">
+      <thead>
+        <tr>
+          <th style="width:120px;">Time</th>
+          <th>Event</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>09:42 AM</td>
+          <td>IDS detects rapid file modification &rarr; ransomware signature match</td>
+        </tr>
+        <tr>
+          <td>09:43 AM</td>
+          <td>Workstation automatically isolated from network (NAC trigger)</td>
+        </tr>
+        <tr>
+          <td>09:45 AM</td>
+          <td>Cyber team validates incident &rarr; confirms ransomware payload</td>
+        </tr>
+        <tr>
+          <td>10:05 AM</td>
+          <td>Malware removed through boot-scan &amp; forensic wipe</td>
+        </tr>
+        <tr>
+          <td>10:18 AM</td>
+          <td>System restored using clean workstation image</td>
+        </tr>
+        <tr>
+          <td>10:30 AM</td>
+          <td>User interviewed; phishing email identified</td>
+        </tr>
+        <tr>
+          <td>11:00 AM</td>
+          <td>Preventive controls updated (email filter, URL block)</td>
+        </tr>
+        <tr>
+          <td>11:20 AM</td>
+          <td>Monitoring initiated for lateral movement</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  {% if kind == 'doctors' and nurse_rows %}
+  <div class="table-wrap" style="margin-top:16px;">
+    <h3 class="glass-title" style="margin-bottom:8px;">Nurse Accounts</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Phone</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for n in nurse_rows %}
+        <tr>
+          <td>{{ n.username or n.get('username') }}</td>
+          <td>{{ n.email or n.get('email') }}</td>
+          <td>{{ n.phone or n.get('phone') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}

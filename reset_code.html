@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+{% block body_class %}auth-bg{% endblock %}
+{% block content %}
+<section class="login-hero">
+  <div class="login-card glass">
+    <div class="login-header">
+      <div class="login-icon">🔑</div>
+      <h2>Enter Reset Code</h2>
+      <p class="subtitle">Check your SMS or email for a 6-digit code</p>
+    </div>
+    <form method="post" class="login-form">
+      <div class="field">
+        <label>Reset Code</label>
+        <div class="input-with-icon">
+          <span class="icon icon-lock" aria-hidden="true"></span>
+          <input name="code" type="text" inputmode="numeric" maxlength="6" pattern="\d{6}" placeholder="Enter 6-digit code" required>
+        </div>
+      </div>
+      <button type="submit" class="btn primary lg glossy block">Verify Code</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

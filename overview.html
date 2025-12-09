@@ -1,0 +1,118 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="overview-layout">
+  <section class="modules">
+    <div class="modules-header">
+      <div style="color: black;">Getting Started</div>
+
+    </div>
+    <div class="modules-grid">
+      <a class="module-card" href="{{ url_for('dashboard') }}">
+        <div class="mod-icon">📈</div>
+        <div class="mod-title">Dashboard</div>
+      </a>
+      <a class="module-card" href="{{ url_for('list_view', kind='doctors') }}">
+        <div class="mod-icon">🩺</div>
+        <div class="mod-title">Doctors</div>
+      </a>
+      <a class="module-card" href="{{ url_for('list_view', kind='appointments') }}">
+        <div class="mod-icon">📅</div>
+        <div class="mod-title">Appointments</div>
+      </a>
+      <a class="module-card" href="{{ url_for('list_view', kind='patients_db') }}">
+        <div class="mod-icon">🧫</div>
+        <div class="mod-title">Patients DB</div>
+      </a>
+      <a class="module-card" href="{{ url_for('list_view', kind='diagnoses') }}">
+        <div class="mod-icon">🧪</div>
+        <div class="mod-title">Diagnoses</div>
+      </a>
+      <a class="module-card" href="{{ url_for('list_view', kind='prescriptions') }}">
+        <div class="mod-icon">💊</div>
+        <div class="mod-title">Prescriptions</div>
+      </a>
+      <a class="module-card" href="{{ url_for('list_view', kind='medical_store') }}">
+        <div class="mod-icon">🏥</div>
+        <div class="mod-title">Medical Store</div>
+      </a>
+      <a class="module-card" href="{{ url_for('accounts') }}">
+        <div class="mod-icon">💰</div>
+        <div class="mod-title">Accounts</div>
+      </a>
+      <a class="module-card" href="{{ url_for('list_view', kind='incidents') }}">
+        <div class="mod-icon">📊</div>
+        <div class="mod-title">Reports</div>
+      </a>
+    </div>
+
+    <details class="details-block" style="max-width: 980px;">
+      <summary class="summary-glass">▶︎ Company Profile</summary>
+      <div class="card" style="margin-top: 8px; padding: 16px; max-height: 260px; overflow:auto;">
+        <p style="margin:0; white-space: pre-line;">{{ profile_text }}</p>
+      </div>
+    </details>
+    <details class="details-block" style="max-width: 980px;">
+      <summary class="summary-glass">▶︎ Security Controls</summary>
+     <div class="card" 
+     style="margin-top: 8px; padding: 16px; display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap: 16px;">
+  
+  <div>
+    <h4 style="margin: 0 0 6px; font-weight: 600;">A. Administrative Controls</h4>
+    <ul class="bullet-list">
+      <li>RBAC (Role-Based Access Control)</li>
+      <li>Staff training</li>
+      <li>Least privilege principle</li>
+      <li>Account banning (Admin-only)</li>
+    </ul>
+  </div>
+
+  <div>
+    <h4 style="margin: 0 0 6px; font-weight: 600;">B. Technical Controls</h4>
+    <ul class="bullet-list">
+      <li>Multi-Factor Authentication (PIN + Biometric + Verification Code)</li>
+      <li>AES-128 Fernet encryption for sensitive records</li>
+      <li>Log-in validation flow</li>
+      <li>PIN required for all edit operations</li>
+      <li>Audit logs for every user action</li>
+      <li>Incident reporting module</li>
+    </ul>
+  </div>
+
+  <div>
+    <h4 style="margin: 0 0 6px; font-weight: 600;">C. Physical Controls</h4>
+    <ul class="bullet-list">
+      <li>Secure servers</li>
+      <li>CCTV in data rooms</li>
+      <li>Biometric devices</li>
+      <li>Restricted IT rooms</li>
+    </ul>
+  </div>
+</div>
+    <details class="details-block" style="max-width: 980px;">
+      <summary class="summary-glass">▶︎ Compliance</summary>
+      <div class="card" style="margin-top: 8px; padding: 16px; max-height: 260px; overflow:auto;">
+        <p style="margin:0; white-space: pre-line;">{{ compliance_text }}</p>
+      </div>
+    </details>
+  </section>
+
+  <aside class="overview-sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-title">Quick Links</div>
+      <a href="{{ url_for('list_view', kind='assets') }}" class="sidebar-link">🧰 Assets Inventory Records</a>
+      <a href="{{ url_for('list_view', kind='threats') }}" class="sidebar-link">⚠️ Threats Vulnerability Matrix</a>
+      <a href="{{ url_for('list_view', kind='bia') }}" class="sidebar-link">📊 BIA</a>
+      <a href="{{ url_for('biometric') }}" class="sidebar-link">🧬 Biometric</a>
+      <a href="{{ url_for('help_center') }}" class="sidebar-link">ℹ️ About US</a>
+      <a href="{{ url_for('accounts') }}" class="sidebar-link">💳 Billing</a>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Notes</div>
+      <div class="sidebar-note">Support Center</div>
+      <div class="sidebar-note">How to use it</div>
+      <div class="sidebar-note">Help Line</div>
+      <div class="sidebar-note">Customer Testimonials</div>
+    </div>
+  </aside>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'layout.html' %}
+{% block body_class %}auth-bg{% endblock %}
+{% block content %}
+<section class="login-hero">
+  <div class="login-card glass">
+    <div class="login-header">
+      <div class="login-icon">🔐</div>
+      <h2>Welcome to TCH!</h2>
+      <p class="subtitle">"Your Health Is Your Wealth. We Protect Both"</p>
+    </div>
+    <form method="post" class="login-form">
+      <div class="field">
+        <label>Username</label>
+        <div class="input-with-icon">
+          <span class="icon icon-user" aria-hidden="true"></span>
+          <input name="username" type="text" value="{{ preset or '' }}" required>
+        </div>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <div class="input-with-icon">
+          <span class="icon icon-lock" aria-hidden="true"></span>
+          <input id="pw" name="password" type="password" required autocomplete="current-password">
+          <button type="button" id="togglePw" class="input-icon-btn" aria-label="Show/Hide password">
+            👁
+          </button>
+        </div>
+      </div>
+      <div class="auth-note" style="margin-top:2px; margin-bottom:10px;">
+        <label>
+          <input type="checkbox" name="remember_pw"> Remember this password
+        </label>
+      </div>
+      <button type="submit" class="btn primary lg glossy block">Sign In</button>
+    </form>
+    <div class="login-links">
+      <a href="{{ url_for('signup') }}">Create account</a>
+      <a href="{{ url_for('validate_username') }}">Forgot password?</a>
+    </div>
+  </div>
+</section>
+<script>
+  (function () {
+    const pw = document.getElementById('pw');
+    const btn = document.getElementById('togglePw');
+    if (pw) {
+      pw.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+        }
+      });
+    }
+    if (pw && btn) {
+      btn.addEventListener('mousedown', function (e) { e.preventDefault(); });
+      btn.addEventListener('click', function () {
+        const show = pw.type === 'password';
+        pw.type = show ? 'text' : 'password';
+        btn.textContent = show ? '🙈' : '👁';
+        pw.focus();
+      });
+    }
+  })();
+</script>
+{% endblock %}

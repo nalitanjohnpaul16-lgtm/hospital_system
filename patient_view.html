@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h2>Patient Record (Decrypted)</h2>
+<div class="form">
+  <div class="back-box">
+    <a class="back-btn" href="{{ url_for('list_view', kind='patients') }}">←</a>
+    <span>Back to Patients</span>
+  </div>
+  {% for k, v in row.items() %}
+  <div><strong>{{ k }}:</strong> {{ v }}</div>
+  {% endfor %}
+</div>
+{% endblock %}

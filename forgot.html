@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+{% block body_class %}auth-bg{% endblock %}
+{% block content %}
+<section class="login-hero">
+  <div class="login-card glass">
+    <div class="login-header">
+      <div class="login-icon">🔒</div>
+      <h2>Forgot Password</h2>
+      <p class="subtitle">Choose a method to reset your password</p>
+    </div>
+
+    <!-- Phone Number Section -->
+    <div class="field">
+      <h3>Phone Number</h3>
+      <p>Provide your phone number to receive a reset code.</p>
+      <form method="post" action="/verify_phone">
+        <div class="input-with-icon"><span>&#9742;</span><input name="phone" type="tel" inputmode="numeric"
+            pattern="\+?\d+" maxlength="20" required></div>
+        <button type="submit" class="btn primary lg glossy block">Send Reset Code</button>
+      </form>
+    </div>
+
+    <!-- Email Link -->
+    <div class="login-links" style="margin-top:20px;">
+      <a href="/verify_email">&#9993; Verify via Email</a>
+    </div>
+
+    <div class="login-links" style="margin-top:20px;">
+      <a href="{{ url_for('verify_biometric_reset') }}">
+        🧬 Use biometric verification
+      </a>
+    </div>
+
+    <div class="login-links" style="margin-top:20px;">
+      <a href="{{ url_for('login') }}">Back to Login</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

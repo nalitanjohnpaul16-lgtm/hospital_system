@@ -1,0 +1,40 @@
+{% extends 'layout.html' %}
+{% block body_class %}auth-bg{% endblock %}
+{% block content %}
+<section class="login-hero">
+  <div class="login-card glass">
+    <div class="back-box">
+      <a href="{{ request.referrer or url_for('overview') }}" class="back-btn">
+        ←
+      </a>
+      <span>Back</span>
+    </div>
+    <div class="login-header">
+      <div class="login-icon">🔒</div>
+      <h2>Create Your PIN</h2>
+      <p class="subtitle">Set a 4–6 digit PIN to protect sensitive actions</p>
+    </div>
+    <form method="post" class="login-form">
+      <div class="field">
+        <label>New PIN</label>
+        <div class="input-with-icon">
+          <input id="newPin" name="pin" type="password" inputmode="numeric" pattern="\d{4,6}" maxlength="6" required
+            placeholder="•••••">
+          <button type="button" id="toggleNewPin" class="input-icon-btn" aria-label="Show/Hide PIN">👁</button>
+        </div>
+      </div>
+      <button type="submit" class="btn primary lg glossy block">Save PIN</button>
+    </form>
+  </div>
+</section>
+<script>
+  (function () {
+    const f = document.getElementById('newPin');
+    const t = document.getElementById('toggleNewPin');
+    if (f && t) {
+      t.addEventListener('mousedown', e => e.preventDefault());
+      t.addEventListener('click', () => { const s = f.type === 'password'; f.type = s ? 'text' : 'password'; t.textContent = s ? '🙈' : '👁'; f.focus(); });
+    }
+  })();
+</script>
+{% endblock %}

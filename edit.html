@@ -1,0 +1,341 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="bg-full" style="background-image:url('/assets/ZZZZZZZZZZZZZZZZ.jpg')"></div>
+<h2 class="glass-title">{{ 'Edit' if values else 'Add' }} {{ kind[:-1]|capitalize }}</h2>
+<form method="post" class="form">
+  {% for col in columns %}
+  {% if col in ['ID', 'Patient ID', 'Appointment ID', 'Diagnosis ID', 'Prescription ID', 'Item ID'] %}
+  {# Skip ALL ID fields - they're auto-generated #}
+  {% else %}
+  <label>{{ col }}</label>
+  {% if (kind in ['appointments', 'diagnoses', 'prescriptions']) and col == 'Doctor Name' %}
+  <select name="{{ col }}">
+    {% for opt in (doctor_options or []) %}
+    <option value="{{ opt }}" {{ 'selected' if values.get(col,'')==opt else '' }}>{{ opt }}</option>
+    {% endfor %}
+  </select>
+  {% elif (kind in ['appointments', 'diagnoses', 'prescriptions']) and (col == 'Patient First Name' or col == 'Patient
+  Last Name') %}
+  <select name="{{ col }}">
+    {% for opt in (patient_first_options if col == 'Patient First Name' else patient_last_options or []) %}
+    <option value="{{ opt }}" {{ 'selected' if values.get(col,'')==opt else '' }}>{{ opt }}</option>
+    {% endfor %}
+  </select>
+  {% elif col in ['Date of Birth','Birthdate'] %}
+  <input name="{{ col }}" type="date" value="{{ values.get(col, '') }}" required>
+  {% elif (kind == 'diagnoses' or kind == 'prescriptions') and col == 'Date' %}
+  <div class="calendar-input-wrapper">
+    <input id="{{ kind }}Date" name="{{ col }}" type="date" value="{{ values.get(col, '') }}" required
+      class="calendar-style-input">
+  </div>
+  {% elif kind == 'appointments' and col == 'Date' %}
+  <div class="calendar-input-wrapper">
+    <input id="appointmentDate" name="{{ col }}" type="date" value="{{ values.get(col, '') }}" required
+      class="calendar-style-input">
+  </div>
+  {% elif kind == 'appointments' and col == 'Time' %}
+  <div class="time-input-wrapper">
+    <input id="appointmentTime" name="{{ col }}" type="time" value="{{ values.get(col, '') }}" required
+      class="time-style-input">
+  </div>
+  {% elif col in ['Date & Time','Appointment Date'] %}
+  <input name="{{ col }}" type="datetime-local" value="{{ values.get(col, '') }}" required>
+  {% elif col in ['Phone Number','Contact Number'] %}
+  <input name="{{ col }}" type="tel" inputmode="numeric" pattern="\d+" maxlength="15" value="{{ values.get(col, '') }}"
+    placeholder="Digits only" required style="max-width: 250px;">
+  {% elif col in ['Amount','Financial Impact'] %}
+  <input name="{{ col }}" type="text" inputmode="decimal" pattern="^\d+(\.\d{2})?$" placeholder="e.g. 1000.00"
+    value="{{ values.get(col, '') }}" maxlength="15" required style="max-width: 200px;">
+  {% elif col == 'Gender' %}
+  <div class="radios">
+    {% set g = values.get(col, '') %}
+    <label><input type="radio" name="{{ col }}" value="Male" {{ 'checked' if g=='Male' else '' }}> Male</label>
+    <label><input type="radio" name="{{ col }}" value="Female" {{ 'checked' if g=='Female' else '' }}> Female</label>
+    <label><input type="radio" name="{{ col }}" value="Other" {{ 'checked' if g not in ['Male','Female'] else '' }}>
+      Other</label>
+  </div>
+  {% elif col == 'Status' %}
+  {% set st = values.get(col, '') %}
+  <select name="{{ col }}">
+    {% if kind == 'appointments' %}
+    {% for opt in ['Scheduled','Completed','Canceled'] %}
+    <option value="{{ opt }}" {{ 'selected' if st==opt else '' }}>{{ opt }}</option>
+    {% endfor %}
+    {% else %}
+    {% for opt in ['Scheduled','In Progress','Resolved','Closed','Cancelled'] %}
+    <option value="{{ opt }}" {{ 'selected' if st==opt else '' }}>{{ opt }}</option>
+    {% endfor %}
+    {% endif %}
+  </select>
+  {% elif col == 'Likelihood' %}
+  {% set lk = values.get(col, '') %}
+  <select name="{{ col }}">
+    {% for opt in ['Low','Medium','High'] %}
+    <option value="{{ opt }}" {{ 'selected' if lk==opt else '' }}>{{ opt }}</option>
+    {% endfor %}
+  </select>
+  {% elif col == 'Impact' %}
+  {% set ip = values.get(col, '') %}
+  <select name="{{ col }}">
+    {% for opt in ['Low','Moderate','High','Severe'] %}
+    <option value="{{ opt }}" {{ 'selected' if ip==opt else '' }}>{{ opt }}</option>
+    {% endfor %}
+  </select>
+  {% elif 'Encrypted' in col %}
+  <textarea name="{{ col }}" rows="3" maxlength="500">{{ values.get(col, '') }}</textarea>
+  {% elif col in ['Diagnosis', 'Medications', 'Notes'] %}
+  <textarea name="{{ col }}" rows="3" maxlength="500">{{ values.get(col, '') }}</textarea>
+  {% else %}
+  <input name="{{ col }}" type="text" value="{{ values.get(col, '') }}" maxlength="100" required>
+  {% endif %}
+  {% endif %}
+  {% endfor %}
+  <div class="form-actions">
+    <a class="btn grey" href="{{ url_for('list_view', kind=kind) }}">Cancel</a>
+    {% if values and kind == 'patients_db' %}
+    <button class="btn secondary" type="submit" name="action" value="decrypt" {{ 'disabled' if decrypted }}>Decrypt
+      Encrypted
+      Fields</button>
+    {% endif %}
+    {% if values and kind == 'appointments' %}
+    <button class="btn secondary" type="submit" name="action" value="decrypt" {{ 'disabled' if decrypted }}>Decrypt
+      Record</button>
+    {% endif %}
+    {% if values and kind == 'diagnoses' %}
+    <button class="btn secondary" type="submit" name="action" value="decrypt" {{ 'disabled' if decrypted }}>Decrypt
+      Record</button>
+    {% endif %}
+    {% if values and kind == 'prescriptions' %}
+    <button class="btn secondary" type="submit" name="action" value="decrypt" {{ 'disabled' if decrypted }}>Decrypt
+      Record</button>
+    {% endif %}
+    <button class="btn primary" type="submit">Save</button>
+  </div>
+  {% if decrypted %}
+  <p class="hint" style="color: #ffa500; margin-top: 12px; font-weight: 600;">⚠️ Decrypted view only. Click Save to
+    persist changes, or Cancel to keep data encrypted.</p>
+  {% endif %}
+</form>
+
+<style>
+  /* Form container - limit max width for better readability */
+  .form {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* Input fields - reasonable width */
+  .form input[type="text"],
+  .form input[type="tel"],
+  .form input[type="date"],
+  .form input[type="time"],
+  .form input[type="datetime-local"],
+  .form select,
+  .form textarea {
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Shorter inputs for specific fields */
+  .form input[type="tel"] {
+    max-width: 250px;
+  }
+
+  .form input[type="date"],
+  .form input[type="time"] {
+    max-width: 300px;
+  }
+
+  /* Textarea - moderate height */
+  .form textarea {
+    min-height: 80px;
+    max-height: 150px;
+    resize: vertical;
+  }
+
+  .calendar-input-wrapper,
+  .time-input-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .calendar-style-input,
+  .time-style-input {
+    width: 100%;
+    padding: 12px 45px 12px 15px;
+    font-size: 16px;
+    border: 2px solid #4a90e2;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .time-style-input {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  }
+
+  .calendar-style-input:hover,
+  .time-style-input:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    border-color: #357abd;
+  }
+
+  .calendar-style-input:focus,
+  .time-style-input:focus {
+    outline: none;
+    border-color: #2d5f9e;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
+  }
+
+  .calendar-style-input::-webkit-calendar-picker-indicator,
+  .time-style-input::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(1);
+    opacity: 0.9;
+  }
+
+  /* Modern calendar/time popup styling */
+  .calendar-style-input::-webkit-datetime-edit,
+  .time-style-input::-webkit-datetime-edit {
+    color: white;
+    font-weight: 600;
+  }
+
+  .calendar-style-input::-webkit-datetime-edit-fields-wrapper,
+  .time-style-input::-webkit-datetime-edit-fields-wrapper {
+    color: white;
+  }
+
+  .calendar-style-input::-webkit-datetime-edit-text,
+  .time-style-input::-webkit-datetime-edit-text {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .calendar-style-input::-webkit-datetime-edit-month-field,
+  .calendar-style-input::-webkit-datetime-edit-day-field,
+  .calendar-style-input::-webkit-datetime-edit-year-field,
+  .time-style-input::-webkit-datetime-edit-hour-field,
+  .time-style-input::-webkit-datetime-edit-minute-field,
+  .time-style-input::-webkit-datetime-edit-ampm-field {
+    color: white;
+    font-weight: 600;
+  }
+
+  /* Placeholder styling */
+  .calendar-style-input::-webkit-input-placeholder,
+  .time-style-input::-webkit-input-placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+</style>
+
+<script>
+  // Add smooth animation when date/time is selected
+  document.addEventListener('DOMContentLoaded', function () {
+    const diagnosesDate = document.getElementById('diagnosesDate');
+    const prescriptionsDate = document.getElementById('prescriptionsDate');
+    const appointmentDate = document.getElementById('appointmentDate');
+    const appointmentTime = document.getElementById('appointmentTime');
+
+    if (diagnosesDate) {
+      diagnosesDate.addEventListener('change', function () {
+        this.style.transform = 'scale(1.02)';
+        setTimeout(() => {
+          this.style.transform = 'scale(1)';
+        }, 200);
+      });
+    }
+
+    if (prescriptionsDate) {
+      prescriptionsDate.addEventListener('change', function () {
+        this.style.transform = 'scale(1.02)';
+        setTimeout(() => {
+          this.style.transform = 'scale(1)';
+        }, 200);
+      });
+    }
+
+    if (appointmentDate) {
+      appointmentDate.addEventListener('change', function () {
+        this.style.transform = 'scale(1.02)';
+        setTimeout(() => {
+          this.style.transform = 'scale(1)';
+        }, 200);
+      });
+    }
+
+    if (appointmentTime) {
+      appointmentTime.addEventListener('change', function () {
+        this.style.transform = 'scale(1.02)';
+        setTimeout(() => {
+          this.style.transform = 'scale(1)';
+        }, 200);
+      });
+    }
+
+    // Form validation before submission
+    const form = document.querySelector('form.form');
+    if (form) {
+      form.addEventListener('submit', function (e) {
+        // Check for empty required fields
+        const requiredInputs = form.querySelectorAll('input[required], select[required], textarea[required]');
+        let hasError = false;
+
+        requiredInputs.forEach(function (input) {
+          if (!input.value.trim()) {
+            hasError = true;
+            input.style.borderColor = 'red';
+            input.style.boxShadow = '0 0 5px rgba(255, 0, 0, 0.5)';
+          } else {
+            input.style.borderColor = '';
+            input.style.boxShadow = '';
+          }
+        });
+
+        // Validate phone numbers (digits only)
+        const phoneInputs = form.querySelectorAll('input[type="tel"]');
+        phoneInputs.forEach(function (input) {
+          if (input.value && !/^\d+$/.test(input.value)) {
+            hasError = true;
+            input.style.borderColor = 'red';
+            input.style.boxShadow = '0 0 5px rgba(255, 0, 0, 0.5)';
+            alert('Phone number must contain only digits');
+          }
+        });
+
+        // Validate amount fields (decimal format)
+        const amountInputs = form.querySelectorAll('input[pattern*="decimal"]');
+        amountInputs.forEach(function (input) {
+          if (input.value && !/^\d+(\.\d{2})?$/.test(input.value)) {
+            hasError = true;
+            input.style.borderColor = 'red';
+            input.style.boxShadow = '0 0 5px rgba(255, 0, 0, 0.5)';
+            alert('Amount must be in format: 1000.00');
+          }
+        });
+
+        if (hasError) {
+          e.preventDefault();
+          return false;
+        }
+      });
+
+      // Clear error styling on input
+      const allInputs = form.querySelectorAll('input, select, textarea');
+      allInputs.forEach(function (input) {
+        input.addEventListener('input', function () {
+          this.style.borderColor = '';
+          this.style.boxShadow = '';
+        });
+      });
+    }
+  });
+</script>
+{% endblock %}
