@@ -21,9 +21,9 @@
   <label>Email</label>
   <input name="email" type="email" value="{{ user.get('email','') }}" placeholder="you@example.com">
 
-  <label>PIN (5 digits; set on first edit)</label>
+  <label>PIN (6 digits; set on first edit)</label>
   <div class="input-with-icon">
-    <input id="pinField" name="pin" type="password" inputmode="numeric" maxlength="5" pattern="\d{5}"
+    <input id="pinField" name="pin" type="password" inputmode="numeric" maxlength="6" pattern="\d{6}"
       placeholder="Optional change">
     <button type="button" id="togglePinField" class="input-icon-btn" aria-label="Show/Hide PIN">👁</button>
   </div>
@@ -105,9 +105,9 @@
         // Remove any non-numeric characters
         this.value = this.value.replace(/[^0-9]/g, '');
 
-        // Limit to 5 digits for profile PIN
-        if (this.value.length > 5) {
-          this.value = this.value.slice(0, 5);
+        // Limit to 6 digits for profile PIN
+        if (this.value.length > 6) {
+          this.value = this.value.slice(0, 6);
         }
       });
     }
