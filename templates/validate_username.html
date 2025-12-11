@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+{% block body_class %}auth-bg{% endblock %}
+{% block content %}
+<section class="login-hero">
+  <div class="login-card glass">
+    <div class="login-header">
+      <div class="login-icon">🔐</div>
+      <h2>Validate Username</h2>
+      <p class="subtitle">Enter your username to proceed</p>
+    </div>
+    <form method="post" class="login-form">
+      <div class="field">
+        <label>Username</label>
+        <div class="input-with-icon">
+          <span class="icon icon-user" aria-hidden="true"></span>
+          <input name="username" type="text" placeholder="Enter your username" required>
+        </div>
+      </div>
+      <button type="submit" class="btn primary lg glossy block">Validate</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

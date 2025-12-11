@@ -1,0 +1,78 @@
+{% extends 'layout.html' %}
+{% block body_class %}auth-bg{% endblock %}
+{% block content %}
+<section class="login-hero">
+  <div class="login-card glass">
+    <div class="back-box">
+      <a href="{{ request.referrer or url_for('overview') }}" class="back-btn">
+        ←
+      </a>
+      <span>Back</span>
+    </div>
+    <div class="login-header">
+      <div class="login-icon">🔒</div>
+      <h2>PIN Verification</h2>
+      {% if context_message %}
+      <p class="subtitle">{{ context_message }}</p>
+      {% else %}
+      <p class="subtitle">Enter your 6‑digit PIN to continue</p>
+      {% endif %}
+    </div>
+    <form method="post" class="login-form">
+      <div class="field">
+        <label>PIN</label>
+        <div class="input-with-icon">
+          <input id="pinField" name="pin" type="password" inputmode="numeric" pattern="\d{6}" maxlength="6" required
+            placeholder="••••••">
+          <button type="button" id="togglePin" class="input-icon-btn" aria-label="Show/Hide PIN">👁</button>
+        </div>
+      </div>
+      <button type="submit" class="btn primary lg glossy block">Verify PIN</button>
+    </form>
+    <div class="login-links" style="margin-top:10px;">
+      <a href="{{ url_for('forgot') }}">Forgot PIN?</a>
+      <br>
+      <a href="{{ url_for('biometric', next=request.url, mode='verify') }}">Use biometric instead</a>
+    </div>
+  </div>
+</section>
+<script>
+  (function () {
+    const pinField = document.getElementById('pinField');
+    const togglePin = document.getElementById('togglePin');
+
+    if (pinField && togglePin) {
+      // Prevent default mousedown to avoid focus loss
+      togglePin.addEventListener('mousedown', e => e.preventDefault());
+
+      // Toggle PIN visibility
+      togglePin.addEventListener('click', () => {
+        const isPassword = pinField.type === 'password';
+        pinField.type = isPassword ? 'text' : 'password';
+        togglePin.textContent = isPassword ? '🙈' : '👁';
+        pinField.focus();
+      });
+
+      // Ensure only numeric input for PIN
+      pinField.addEventListener('input', function (e) {
+        // Remove any non-numeric characters
+        this.value = this.value.replace(/[^0-9]/g, '');
+
+        // Limit to 6 digits
+        if (this.value.length > 6) {
+          this.value = this.value.slice(0, 6);
+        }
+      });
+
+      // Auto-submit when 6 digits are entered (optional enhancement)
+      pinField.addEventListener('input', function (e) {
+        if (this.value.length === 6) {
+          // Optional: Auto-submit form when 6 digits are entered
+          // Uncomment the next line if you want auto-submit
+          // this.form.submit();
+        }
+      });
+    }
+  })();
+</script>
+{% endblock %}

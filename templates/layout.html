@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tech-Care Hospital — Enterprise Security</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2">
+  <style>
+    .nav-links .juicy {
+      transition: filter .2s, opacity .2s, box-shadow .2s;
+    }
+
+    .nav-links.dim .juicy {
+      opacity: .4;
+    }
+
+    .nav-links .juicy.glow {
+      opacity: 1 !important;
+      filter: drop-shadow(0 0 6px rgba(0, 180, 255, .65));
+      box-shadow: 0 0 0 2px rgba(0, 180, 255, .25) inset;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    /* Shine effect for header buttons */
+    .juicy {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .juicy .shine {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 60px;
+      left: -80px;
+      background: linear-gradient(120deg, transparent, rgba(255, 255, 255, .35), transparent);
+      transform: skewX(-20deg);
+      animation: shine-sweep .6s ease forwards;
+      pointer-events: none;
+    }
+
+    @keyframes shine-sweep {
+      to {
+        left: 120%;
+      }
+    }
+
+    /* Dark theme overrides */
+    body {
+      background: #0b1220;
+      color: #e5e7eb;
+    }
+
+    .topbar.techcare-header {
+      background: rgba(8, 12, 24, 0.85);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .container {
+      color: #e5e7eb;
+    }
+
+    .card,
+    .login-card.glass,
+    .sidebar-card {
+      background: rgba(17, 24, 39, 0.85) !important;
+      color: #e5e7eb;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .login-header h2,
+    .sidebar-title {
+      color: #f3f4f6;
+    }
+
+    .btn {
+      color: #e5e7eb;
+    }
+
+    .btn.primary {
+      background: #2563eb;
+    }
+
+    .btn.secondary {
+      background: #334155;
+    }
+
+    .btn.ghost {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .btn.danger {
+      background: #b91c1c;
+    }
+
+    a {
+      color: #93c5fd;
+    }
+
+    .flash-item {
+      background: rgba(2, 6, 23, 0.7);
+      color: #e5e7eb;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Tables dark and interactive */
+    .table {
+      background: rgba(2, 6, 23, 0.6);
+      color: #e5e7eb;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    .table th {
+      background: rgba(15, 23, 42, 0.9);
+      color: #f8fafc;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .table td,
+    .table th {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .table tbody tr {
+      transition: transform .25s ease, filter .2s ease, box-shadow .25s ease;
+      will-change: transform, filter;
+    }
+
+    .table.hovering tbody tr {
+      filter: blur(2px);
+    }
+
+    .table.hovering tbody tr:hover {
+      filter: none;
+      transform: perspective(700px) rotateX(4deg) scale(1.01);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+      position: relative;
+      z-index: 2;
+    }
+
+    .table-wrap {
+      backdrop-filter: blur(2px);
+    }
+  </style>
+</head>
+
+<body
+  class="gradient-flow {{ session.get('palette','opt1') }} {% if session.get('user') and (request.endpoint!='overview' and (request.endpoint=='list_view' and (request.path.startswith('/records/incidents') or request.path.startswith('/records/bia') or request.path.startswith('/records/patients'))) ) %}app-bg{% endif %} {% if session.get('user') and (request.endpoint=='crypto' or (request.endpoint=='list_view' and (request.path.startswith('/records/assets') or request.path.startswith('/records/threats'))) ) %}app-bg-2{% endif %} {% block body_class %}{% endblock %}">
+  {% if request.endpoint in ['dashboard','overview'] %}
+  <video id="bg-video" aria-hidden="true" autoplay muted loop playsinline preload="auto">
+    <source src="{{ url_for('serve_assets', filename='bg-video.mp4') }}" type="video/mp4">
+  </video>
+  {% endif %}
+  <canvas id="bg-particles" aria-hidden="true"></canvas>
+  <nav class="topbar techcare-header">
+    <div class="brand brand-stacked">
+      <div class="brand-row">
+        <span class="brand-title-row tech-care-hospital">ech-Care Hospital</span>
+        <img src="/assets/techcarelogo.png" alt="Tech-Care logo" class="brand-overlay-logo">
+      </div>
+
+    </div>
+    {% if session.get('user') %}
+    <div class="nav-links">
+      <a class="juicy {% if request.endpoint=='overview' %}active{% endif %}" href="{{ url_for('overview') }}">🏠
+        Home</a>
+      <a class="juicy {% if request.path.startswith('/records/assets') %}active{% endif %}"
+        href="{{ url_for('list_view', kind='assets') }}">🧰 Assets</a>
+      <a class="juicy {% if request.path.startswith('/records/threats') %}active{% endif %}"
+        href="{{ url_for('list_view', kind='threats') }}">⚠️ Threats</a>
+      <a class="juicy {% if request.path.startswith('/records/bia') %}active{% endif %}"
+        href="{{ url_for('list_view', kind='bia') }}">📊 BIA</a>
+      <a class="juicy {% if request.endpoint in ['audit_index','audit_kind'] %}active{% endif %}"
+        href="{{ url_for('audit_index') }}">🧭 Audit</a>
+      <div class="dropdown">
+        <button type="button" class="btn ghost" style="display:flex; align-items:center; gap:8px;">
+          {% if current_user and current_user.get('avatar') %}
+          <img src="{{ current_user.get('avatar') }}?v={{ current_user.get('avatar_ver', 0) }}" alt="avatar"
+            class="avatar-sm">
+          {% else %}
+          <span class="avatar-sm avatar-fallback">👤</span>
+          {% endif %}
+          <span>{{ session.get('user') }}</span> ▾
+        </button>
+        <div class="dropdown-menu">
+          <a href="{{ url_for('profile') }}">👤 Profile</a>
+          <a href="{{ url_for('accounts') }}">🔀 Switch Account</a>
+          {% if current_user and (current_user.role|lower == 'admin') %}
+          <a href="{{ url_for('manage_users') }}">👥 Manage Users</a>
+          {% endif %}
+          <a href="{{ url_for('settings') }}">⚙️ Settings</a>
+          <a href="{{ url_for('help_center') }}">ℹ️ About US</a>
+          <a href="{{ url_for('help_center') }}">❓ Help</a>
+          <a href="{{ url_for('logout') }}">🚪 Logout</a>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="nav-links">
+      <a class="juicy {% if request.endpoint=='login' %}active{% endif %}" href="{{ url_for('login') }}">🔐 Login</a>
+      <a class="juicy {% if request.endpoint=='signup' %}active{% endif %}" href="{{ url_for('signup') }}">📝 Sign
+        Up</a>
+      <a class="juicy {% if request.endpoint=='accounts' %}active{% endif %}" href="{{ url_for('accounts') }}">👥
+        Accounts</a>
+      <a class="juicy {% if request.endpoint=='settings' %}active{% endif %}" href="{{ url_for('settings') }}">⚙️
+        Settings</a>
+      <a class="juicy {% if request.endpoint=='help_center' %}active{% endif %}" href="{{ url_for('help_center') }}">❓
+        Help</a>
+    </div>
+    {% endif %}
+  </nav>
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash">
+      {% for category, msg in messages %}
+      <div class="flash-item {{ category }}">{{ msg }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="footer footer-typing"><span id="footer-typer"
+      data-text='Your Health Is Your Wealth. We Protect Both — 📞 Hotline: 0992 299 8219 • 🔗 Socials: @tech-carehospital'></span><span
+      class="caret" aria-hidden="true">|</span></footer>
+  <script>
+    // Soft particle glow background
+    (function () {
+      const c = document.getElementById('bg-particles');
+      if (!c) return; const ctx = c.getContext('2d');
+      let w, h; const pr = window.devicePixelRatio || 1;
+      const colors = ['#e3f2fd', '#90caf9', '#00bcd4'];
+      const particles = []; const COUNT = 60;
+      function resize() { w = c.width = innerWidth * pr; h = c.height = innerHeight * pr; c.style.width = innerWidth + 'px'; c.style.height = innerHeight + 'px'; }
+      function spawn() { particles.length = 0; for (let i = 0; i < COUNT; i++) { particles.push({ x: Math.random() * w, y: Math.random() * h, r: (1 + Math.random() * 2) * pr, a: 0.35 + Math.random() * 0.35, vx: (Math.random() - 0.5) * 0.2 * pr, vy: (Math.random() - 0.5) * 0.2 * pr, c: colors[i % colors.length] }); } }
+      function step() { ctx.clearRect(0, 0, w, h); for (const p of particles) { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > w) p.vx *= -1; if (p.y < 0 || p.y > h) p.vy *= -1; ctx.beginPath(); ctx.fillStyle = p.c; ctx.globalAlpha = p.a; ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); } ctx.globalAlpha = 1; requestAnimationFrame(step); }
+      resize(); spawn(); addEventListener('resize', () => { resize(); spawn(); }); step();
+    })();
+    // Button ripple/glow effect
+    (function () {
+      document.addEventListener('click', function (e) {
+        const t = e.target.closest('.btn'); if (!t) return;
+        const rect = t.getBoundingClientRect();
+        const r = document.createElement('span');
+        r.className = 'ripple';
+        const size = Math.max(rect.width, rect.height);
+        r.style.width = r.style.height = size + 'px';
+        r.style.left = (e.clientX - rect.left - size / 2) + 'px';
+        r.style.top = (e.clientY - rect.top - size / 2) + 'px';
+        t.appendChild(r); setTimeout(() => r.remove(), 600);
+      });
+    })();
+  </script>
+  <script>
+    // Header buttons: keep clicked/active highlighted, others dimmed
+    (function () {
+      const nav = document.querySelector('.nav-links');
+      if (!nav) return;
+      function setActiveState() {
+        const act = nav.querySelector('.juicy.active');
+        if (act) {
+          nav.classList.add('dim');
+          nav.querySelectorAll('.juicy').forEach(a => a.classList.remove('glow'));
+          act.classList.add('glow');
+        } else {
+          nav.classList.remove('dim');
+          nav.querySelectorAll('.juicy').forEach(a => a.classList.remove('glow'));
+        }
+      }
+      setActiveState();
+      nav.addEventListener('mouseover', function (e) {
+        const a = e.target.closest('.juicy'); if (!a) return;
+        nav.classList.add('dim');
+        a.classList.add('glow');
+      });
+      nav.addEventListener('mouseout', function (e) {
+        const to = e.relatedTarget; if (nav.contains(to)) return;
+        setActiveState();
+      });
+      nav.addEventListener('click', function (e) {
+        const a = e.target.closest('.juicy'); if (!a) return;
+        // Visual feedback immediately; page will navigate
+        nav.classList.add('dim');
+        nav.querySelectorAll('.juicy').forEach(x => x.classList.remove('glow'));
+        a.classList.add('glow');
+        const s = document.createElement('span'); s.className = 'shine';
+        a.appendChild(s);
+        setTimeout(() => { s.remove(); }, 650);
+      });
+    })();
+  </script>
+  <script>
+    // Table tilt/blur interactions
+    (function () {
+      document.querySelectorAll('.table').forEach(function (tbl) {
+        const tb = tbl.tBodies[0]; if (!tb) return;
+        function enter() { tbl.classList.add('hovering'); }
+        function leave() { tbl.classList.remove('hovering'); }
+        tb.addEventListener('mouseenter', enter);
+        tb.addEventListener('mouseleave', leave);
+      });
+    })();
+  </script>
+  <script>
+    // Persistent dropdown on click with outside click to close
+    (function () {
+      const dd = document.querySelector('.dropdown');
+      if (!dd) return;
+      const btn = dd.querySelector('button');
+      const menu = dd.querySelector('.dropdown-menu');
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation(); dd.classList.toggle('open');
+      });
+      if (menu) {
+        menu.addEventListener('click', function (e) { e.stopPropagation(); });
+      }
+      document.addEventListener('click', function () { dd.classList.remove('open'); });
+    })();
+  </script>
+  <script>
+    // Simple footer typewriter effect
+    (function () {
+      const el = document.getElementById('footer-typer');
+      if (!el) return;
+      const text = el.getAttribute('data-text') || '';
+      let i = 0; const speed = 50; // ms per char
+      function type() {
+        if (i <= text.length) { el.textContent = text.slice(0, i++); setTimeout(type, speed); }
+        else { setTimeout(() => { i = 0; el.textContent = ''; type(); }, 2000); }
+      }
+      type();
+    })();
+  </script>
+
+  <script>
+    // Debug background video loading
+    (function () {
+      const video = document.getElementById('bg-video');
+      if (!video) {
+        console.log('Background video element not found - not on dashboard/overview page');
+        return;
+      }
+
+      console.log('Background video element found:', video);
+      console.log('Video source:', video.querySelector('source')?.src);
+
+      video.addEventListener('loadstart', () => console.log('Video: Load started'));
+      video.addEventListener('loadeddata', () => console.log('Video: Data loaded'));
+      video.addEventListener('canplay', () => console.log('Video: Can play'));
+      video.addEventListener('playing', () => console.log('Video: Playing'));
+      video.addEventListener('error', (e) => console.error('Video error:', e));
+
+      // Force play attempt
+      video.play().then(() => {
+        console.log('Video play successful');
+      }).catch(err => {
+        console.error('Video play failed:', err);
+      });
+    })();
+  </script>
+
+  <!-- Auto-encryption when leaving clinical modules -->
+  <script>
+    // Auto-encrypt when user navigates away from clinical modules
+    function autoEncryptOnExit() {
+      const currentPath = window.location.pathname;
+      const clinicalModules = ['/records/patients_db', '/records/doctors', '/records/appointments',
+        '/records/diagnoses', '/records/prescriptions'];
+
+      // Check if we're in a clinical module
+      const inClinicalModule = clinicalModules.some(module => currentPath.startsWith(module));
+
+      if (inClinicalModule) {
+        // Auto-encrypt when navigating away
+        window.addEventListener('beforeunload', function () {
+          // Send async request to encrypt all data
+          navigator.sendBeacon('/auto-encrypt-all');
+        });
+
+        // Auto-encrypt when clicking navigation links
+        document.addEventListener('click', function (e) {
+          const link = e.target.closest('a');
+          if (link && link.href) {
+            const targetPath = new URL(link.href).pathname;
+            const leavingClinicalModule = !clinicalModules.some(module => targetPath.startsWith(module));
+
+            if (leavingClinicalModule) {
+              // Send async request to encrypt all data
+              fetch('/auto-encrypt-all', { method: 'POST' });
+            }
+          }
+        });
+      }
+    }
+
+    // Initialize auto-encryption
+    document.addEventListener('DOMContentLoaded', autoEncryptOnExit);
+  </script>
+</body>
+
+</html>

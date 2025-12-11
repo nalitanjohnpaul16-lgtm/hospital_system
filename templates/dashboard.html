@@ -1,0 +1,112 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="dash-grid">
+  <a class="stat-card purple" href="{{ url_for('list_view', kind='doctors') }}" title="View Doctor Records">
+    <div class="stat-title">Doctors</div>
+    <div class="stat-value">{{ cards.doctors }}</div>
+  </a>
+  <a class="stat-card blue" href="{{ url_for('list_view', kind='patients_db') }}" title="View Patient Records">
+    <div class="stat-title">Patients</div>
+    <div class="stat-value">{{ cards.patients }}</div>
+  </a>
+  <a class="stat-card amber" href="{{ url_for('list_view', kind='doctors') }}"
+    title="View Nurse accounts and related records">
+    <div class="stat-title">Nurses</div>
+    <div class="stat-value">{{ cards.nurses }}</div>
+  </a>
+
+</div>
+
+<div class="dash-panels">
+  <div class="panel">
+    <div class="panel-title"><a href="{{ url_for('list_view', kind='incidents') }}"
+        style="color:inherit; text-decoration:none;">Incidents by Status</a></div>
+    <canvas id="barChart" height="140"></canvas>
+  </div>
+  <div class="panel">
+    <div class="panel-title"><a href="{{ url_for('list_view', kind='threats') }}"
+        style="color:inherit; text-decoration:none;">Threat Severity</a></div>
+    <canvas id="donutChart" height="140"></canvas>
+  </div>
+</div>
+
+<div class="dash-panels">
+  <div class="panel" style="grid-column: 1 / -1;">
+    <div class="panel-title">System Users</div>
+    {% if users %}
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+          <tr>
+            <td>{{ u.username }}</td>
+            <td>{{ u.role }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p>No users yet.</p>
+    {% endif %}
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script id="chart-data" type="application/json">{{ {
+  'bar_labels': bar_labels,
+  'bar_values': bar_values,
+  'doughnut_labels': doughnut_labels,
+  'doughnut_values': doughnut_values
+}|tojson }}</script>
+<script>
+  const barCtx = document.getElementById('barChart');
+  const donutCtx = document.getElementById('donutChart');
+  const isDark = document.body.classList.contains('dark');
+  const gridColor = isDark ? '#374151' : '#e5e7eb';
+  const textColor = '#ffffff';
+  const payload = JSON.parse(document.getElementById('chart-data').textContent || '{}');
+
+  new Chart(barCtx, {
+    type: 'bar',
+    data: {
+      labels: payload.bar_labels || [],
+      datasets: [{
+        label: 'Incidents',
+        data: payload.bar_values || [],
+        backgroundColor: ['#a855f7', '#22d3ee', '#f59e0b', '#ef4444', '#10b981'],
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      plugins: {
+        legend: { display: false },
+        tooltip: { titleColor: textColor, bodyColor: textColor }
+      },
+      scales: {
+        x: { grid: { color: gridColor }, ticks: { color: textColor } },
+        y: { grid: { color: gridColor }, ticks: { color: textColor }, beginAtZero: true }
+      }
+    }
+  });
+
+  new Chart(donutCtx, {
+    type: 'doughnut',
+    data: {
+      labels: payload.doughnut_labels || [],
+      datasets: [{
+        data: payload.doughnut_values || [],
+        backgroundColor: ['#22d3ee', '#f59e0b', '#a855f7', '#ef4444'],
+        borderWidth: 0
+      }]
+    },
+    options: { plugins: { legend: { labels: { color: textColor } }, tooltip: { titleColor: textColor, bodyColor: textColor } } }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,6 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h2>Cryptography Demo</h2>
+<pre class="preblock">{{ output }}</pre>
+<a class="btn" href="{{ url_for('crypto') }}">Run Again</a>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="bg-full bg-full-solid" style="background-image:url('/assets/ZZZZZZZZZZZZZZZZ.jpg')"></div>
+<div class="card"
+  style="max-width:600px; margin: 0 auto; padding: 24px; background: rgba(45, 55, 72, 0.7); border-radius: 12px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.1);">
+  <div style="margin-bottom: 20px; display: flex; align-items: center;">
+    <h2 style="margin: 0; color: #fff; font-size: 1.5rem; font-weight: 600; text-align: left;">
+      DELETE ACCOUNT
+    </h2>
+  </div>
+  <p
+    style="color: #ff6b6b; font-weight: 500; margin-bottom: 20px; background: rgba(255, 0, 0, 0.1); padding: 12px; border-radius: 6px; border-left: 3px solid #ff6b6b;">
+    ⚠️ Warning: This action is permanent. Your account and all related data will be deleted.
+  </p>
+  <form method="post" class="form">
+    <label>Username</label>
+    <input type="text" name="username" value="{{ session.get('user') }}" required>
+    <label>Password</label>
+    <div class="input-with-icon">
+      <input id="delPw" type="password" name="password" required>
+      <button type="button" id="toggleDelPw" class="input-icon-btn" aria-label="Show/Hide password">👁</button>
+    </div>
+    <label class="checkbox"><input type="checkbox" name="confirm"> I understand this cannot be undone</label>
+    <div class="form-actions" style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
+      <a class="btn" href="{{ url_for('settings') }}" style="background: #4a5568; color: white;">Cancel</a>
+      <button class="btn danger" type="submit" style="background: #e53e3e; color: white;">Delete My Account</button>
+    </div>
+  </form>
+</div>
+<style>
+  .input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .input-with-icon input {
+    flex: 1;
+    padding-right: 45px;
+  }
+
+  .input-icon-btn {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+    z-index: 1;
+    color: #fff;
+  }
+
+  .input-icon-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .input-icon-btn:focus {
+    outline: 2px solid #4a90e2;
+    outline-offset: 2px;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const passwordField = document.getElementById('delPw');
+    const toggleButton = document.getElementById('toggleDelPw');
+
+    if (passwordField && toggleButton) {
+      // Prevent form submission when clicking the eye button
+      toggleButton.addEventListener('mousedown', function (e) {
+        e.preventDefault();
+      });
+
+      // Toggle password visibility
+      toggleButton.addEventListener('click', function () {
+        const isPassword = passwordField.type === 'password';
+        passwordField.type = isPassword ? 'text' : 'password';
+        toggleButton.textContent = isPassword ? '🙈' : '👁';
+        toggleButton.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+        passwordField.focus();
+      });
+    }
+  });
+</script>
+{% endblock %}

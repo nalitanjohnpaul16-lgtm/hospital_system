@@ -3,6 +3,38 @@
     {
       "username": "CMtheDoc",
       "saved_password": ""
+    },
+    {
+      "username": "VeaNurse",
+      "saved_password": "Hospital@123"
+    },
+    {
+      "username": "KerlsanAuditor",
+      "saved_password": "Hospital@123"
+    },
+    {
+      "username": "admin",
+      "saved_password": "Hospital@123"
+    },
+    {
+      "username": "AssetManager",
+      "saved_password": "Hospital@123"
+    },
+    {
+      "username": "InventoryStaff",
+      "saved_password": "Hospital@123"
+    },
+    {
+      "username": "Patient",
+      "saved_password": "Hospital@123"
+    },
+    {
+      "username": "ParentAsOther",
+      "saved_password": "Hospital@123"
+    },
+    {
+      "username": "BanTheAccount",
+      "saved_password": "Hospital@123"
     }
   ]
 }

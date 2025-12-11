@@ -1,0 +1,85 @@
+{
+  "events": [
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "VeaNurse",
+      "timestamp": "2025-12-11T19:55:05.811432",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "VeaNurse",
+      "timestamp": "2025-12-11T19:55:06.124937",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "VeaNurse",
+      "timestamp": "2025-12-11T19:55:06.155966",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "VeaNurse",
+      "timestamp": "2025-12-11T19:55:06.182500",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "VeaNurse",
+      "timestamp": "2025-12-11T19:55:06.170493",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "VeaNurse",
+      "timestamp": "2025-12-11T19:57:06.645880",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "VeaNurse",
+      "timestamp": "2025-12-11T19:57:08.699962",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "VeaNurse",
+      "timestamp": "2025-12-11T19:57:12.750304",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "VeaNurse",
+      "timestamp": "2025-12-11T19:57:12.829803",
+      "details": {
+        "module": "appointments"
+      }
+    }
+  ]
+}

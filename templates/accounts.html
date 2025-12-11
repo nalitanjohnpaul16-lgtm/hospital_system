@@ -17,22 +17,17 @@
       </div>
       <div style="display:flex; gap:6px; align-items:center;">
         <a class="btn" href="{{ url_for('login', username=a.username) }}">🔐 Login</a>
-        <form method="post" action="{{ url_for('accounts_save_password') }}" style="display:inline;">
-          <input type="hidden" name="username" value="{{ a.username }}">
-          <input type="password" name="password" placeholder="Save password"
-            style="padding:6px; border:1px solid #e5e7eb; border-radius:6px;">
-          <button class="btn" type="submit">💾 Save</button>
-        </form>
+
         {% if a.saved_password %}
         <form method="post" action="{{ url_for('accounts_clear_password') }}" style="display:inline;">
           <input type="hidden" name="username" value="{{ a.username }}">
-          <button class="btn secondary" type="submit">🧹 Clear</button>
+          <button class="btn secondary" type="submit">Clear</button>
         </form>
         {% endif %}
         <form method="post" action="{{ url_for('accounts_remove') }}" style="display:inline;"
           onsubmit="return confirm('Remove this account from this device?');">
           <input type="hidden" name="username" value="{{ a.username }}">
-          <button class="btn danger" type="submit">🗑️ Remove</button>
+          <button class="btn danger" type="submit">Remove</button>
         </form>
       </div>
     </li>
