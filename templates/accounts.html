@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="bg-full bg-full-solid" style="background-image:url('/assets/ZZZZZZZZZZZZZZZZ.jpg')"></div>
+<h2 class="glass-title">Accounts</h2>
+<div class="form">
+  {% if accounts %}
+  <ul style="list-style:none; padding-left:0; display:grid; gap:8px;">
+    {% for a in accounts %}
+    <li
+      style="display:flex; gap:10px; align-items:center; justify-content:space-between; border:1px solid #e5e7eb; border-radius:8px; padding:8px 10px;">
+      <div style="display:flex; gap:10px; align-items:center;">
+        <span style="font-size:18px;">👤</span>
+        <strong>{{ a.username }}</strong>
+        {% if a.saved_password %}
+        <span title="Password saved" style="color:#16a34a;">🔒 saved</span>
+        {% endif %}
+      </div>
+      <div style="display:flex; gap:6px; align-items:center;">
+        <a class="btn" href="{{ url_for('login', username=a.username) }}">🔐 Login</a>
+        <form method="post" action="{{ url_for('accounts_save_password') }}" style="display:inline;">
+          <input type="hidden" name="username" value="{{ a.username }}">
+          <input type="password" name="password" placeholder="Save password"
+            style="padding:6px; border:1px solid #e5e7eb; border-radius:6px;">
+          <button class="btn" type="submit">💾 Save</button>
+        </form>
+        {% if a.saved_password %}
+        <form method="post" action="{{ url_for('accounts_clear_password') }}" style="display:inline;">
+          <input type="hidden" name="username" value="{{ a.username }}">
+          <button class="btn secondary" type="submit">🧹 Clear</button>
+        </form>
+        {% endif %}
+        <form method="post" action="{{ url_for('accounts_remove') }}" style="display:inline;"
+          onsubmit="return confirm('Remove this account from this device?');">
+          <input type="hidden" name="username" value="{{ a.username }}">
+          <button class="btn danger" type="submit">🗑️ Remove</button>
+        </form>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>No saved accounts yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

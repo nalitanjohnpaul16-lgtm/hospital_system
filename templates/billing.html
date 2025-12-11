@@ -1,0 +1,293 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="bg-full bg-full-solid" style="background-image:url('/assets/ZZZZZZZZZZZZZZZZ.jpg')"></div>
+<div class="billing-layout">
+  <section class="modules">
+    <div class="modules-header">
+      <div style="color: black;">💳 Billing & Payment Center</div>
+      <a href="{{ url_for('overview') }}" class="btn outline sm">← Back to Home</a>
+    </div>
+
+    <!-- Payment Methods Grid -->
+    <div class="modules-grid payment-grid">
+      <!-- GCash Payment -->
+      <div class="module-card payment-card" onclick="handlePayment('GCash')">
+        <div class="mod-icon">📱</div>
+        <div class="mod-title">GCash</div>
+        <div class="payment-subtitle">Scan QR Code</div>
+        <div class="payment-amount">₱15,750.00</div>
+      </div>
+
+      <!-- PayMaya Payment -->
+      <div class="module-card payment-card" onclick="handlePayment('PayMaya')">
+        <div class="mod-icon">💙</div>
+        <div class="mod-title">PayMaya</div>
+        <div class="payment-subtitle">Scan QR Code</div>
+        <div class="payment-amount">₱15,750.00</div>
+      </div>
+
+      <!-- Credit/Debit Card -->
+      <div class="module-card payment-card" onclick="handlePayment('Card')">
+        <div class="mod-icon">💳</div>
+        <div class="mod-title">Credit/Debit Card</div>
+        <div class="payment-subtitle">Secure Payment</div>
+        <div class="payment-amount">₱15,750.00</div>
+      </div>
+
+      <!-- Bank Transfer -->
+      <div class="module-card payment-card" onclick="handlePayment('Bank')">
+        <div class="mod-icon">🏦</div>
+        <div class="mod-title">Bank Transfer</div>
+        <div class="payment-subtitle">InstaPay/PESONet</div>
+        <div class="payment-amount">₱15,750.00</div>
+      </div>
+
+      <!-- Payment History -->
+      <div class="module-card payment-card" onclick="showPaymentHistory()">
+        <div class="mod-icon">📊</div>
+        <div class="mod-title">Payment History</div>
+        <div class="payment-subtitle">View Past Payments</div>
+        <div class="payment-amount">View All</div>
+      </div>
+
+      <!-- Account Settings -->
+      <div class="module-card payment-card" onclick="showAccountSettings()">
+        <div class="mod-icon">⚙️</div>
+        <div class="mod-title">Account Settings</div>
+        <div class="payment-subtitle">Manage Billing Info</div>
+        <div class="payment-amount">Settings</div>
+      </div>
+    </div>
+
+    <!-- Itemized Services -->
+    <details class="details-block compact-details">
+      <summary class="summary-glass">▶︎ Itemized Services</summary>
+      <div class="card" style="margin-top: 6px; padding: 12px;">
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Service</th>
+                <th>Date</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Consultation Fee</td>
+                <td>Dec 10</td>
+                <td>₱2,500.00</td>
+              </tr>
+              <tr>
+                <td>Lab Tests</td>
+                <td>Dec 10</td>
+                <td>₱4,200.00</td>
+              </tr>
+              <tr>
+                <td>Medications</td>
+                <td>Dec 10</td>
+                <td>₱3,050.00</td>
+              </tr>
+              <tr>
+                <td>Room Charges</td>
+                <td>Dec 8-10</td>
+                <td>₱6,000.00</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr style="font-weight: bold; background: rgba(255,255,255,0.1);">
+                <td colspan="2">Total</td>
+                <td>₱15,750.00</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </details>
+
+    <!-- Security Notice -->
+    <details class="details-block compact-details">
+      <summary class="summary-glass">▶︎ Security & Privacy</summary>
+      <div class="card" style="margin-top: 6px; padding: 12px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="font-size: 32px;">🔐</div>
+          <div>
+            <h4 style="margin: 0 0 4px 0; color: #10b981; font-size: 14px;">Secure Payment Guarantee</h4>
+            <p style="margin: 0; color: #e5e7eb; font-size: 12px; line-height: 1.4;">All payments are processed through
+              encrypted channels with bank-level security.</p>
+          </div>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <aside class="overview-sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-title">Quick Actions</div>
+      <a href="#" onclick="handlePayment('GCash')" class="sidebar-link">📱 Pay with GCash</a>
+      <a href="#" onclick="handlePayment('Card')" class="sidebar-link">💳 Pay with Card</a>
+      <a href="#" onclick="showPaymentHistory()" class="sidebar-link">📊 Payment History</a>
+      <a href="{{ url_for('accounts') }}" class="sidebar-link">👥 Switch Account</a>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Support</div>
+      <div class="sidebar-note">24/7 Payment Support</div>
+      <div class="sidebar-note">Billing Inquiries</div>
+      <div class="sidebar-note">Payment Issues</div>
+      <div class="sidebar-note">Refund Requests</div>
+    </div>
+  </aside>
+</div>
+{% endblock %}<style>
+  /* Compressed Billing Layout */
+  .billing-layout {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 12px;
+    align-items: start;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  /* Compressed Payment Grid */
+  .payment-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .payment-card {
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .payment-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, .24), 0 1px 0 rgba(255, 255, 255, .45) inset;
+  }
+
+  .payment-subtitle {
+    font-size: 12px;
+    color: #9ca3af;
+    margin: 4px 0;
+  }
+
+  .payment-amount {
+    font-size: 14px;
+    font-weight: 700;
+    color: #10b981;
+    font-family: 'Courier New', monospace;
+  }
+
+  /* Compact Details Blocks */
+  .compact-details {
+    margin-top: 8px;
+  }
+
+  .compact-details .table {
+    font-size: 13px;
+  }
+
+  .compact-details .table th,
+  .compact-details .table td {
+    padding: 6px 8px;
+  }
+
+  /* Shine effect for billing cards */
+  .billing-card::after {
+    content: "";
+    position: absolute;
+    top: -20%;
+    bottom: -20%;
+    width: 70px;
+    left: -120px;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, .22), transparent);
+    transform: skewX(-20deg);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .billing-card:hover::after {
+    animation: panel-shine .9s ease forwards;
+  }
+
+  /* Compressed Responsive Design */
+  @media (max-width: 900px) {
+    .billing-layout {
+      grid-template-columns: 1fr;
+      gap: 8px;
+      padding: 0 12px;
+    }
+
+    .payment-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .payment-grid {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+
+    .billing-layout {
+      padding: 0 8px;
+    }
+  }
+</style>
+<script>
+  function handlePayment(method) {
+    const messages = {
+      'GCash': '📱 GCash Payment\n\nIn a real implementation:\n• Opens GCash app automatically\n• Pre-fills amount: ₱15,750.00\n• Shows merchant: Tech-Care Hospital\n• Processes payment securely\n\nReference: TCH-2024-001',
+      'PayMaya': '💙 PayMaya Payment\n\nIn a real implementation:\n• Opens PayMaya app automatically\n• Pre-fills amount: ₱15,750.00\n• Shows merchant: Tech-Care Hospital\n• Processes payment securely\n\nReference: TCH-2024-001',
+      'Card': '💳 Credit/Debit Card Payment\n\nIn a real implementation:\n• Opens secure card payment form\n• Processes payment through bank gateway\n• Amount: ₱15,750.00\n• Merchant: Tech-Care Hospital\n\nReference: TCH-2024-001',
+      'Bank': '🏦 Bank Transfer\n\nIn a real implementation:\n• Shows InstaPay/PESONet QR code\n• Bank: Tech-Care Hospital\n• Account: 1234-5678-9012\n• Amount: ₱15,750.00\n\nReference: TCH-2024-001'
+    };
+
+    alert(messages[method] || 'Payment method selected');
+
+    // Simulate payment processing
+    setTimeout(() => {
+      if (confirm('🎉 Payment Processed Successfully!\n\nTransaction ID: TCH-' + Date.now() + '\nAmount: ₱15,750.00\n\nThank you for choosing Tech-Care Hospital.\n\nWould you like to view your receipt?')) {
+        alert('📧 Receipt has been sent to your email address.');
+      }
+    }, 1500);
+  }
+
+  function showPaymentHistory() {
+    alert('📊 Payment History\n\nIn a real implementation:\n• Shows all past payments\n• Transaction details\n• Download receipts\n• Payment status tracking\n\nThis would redirect to a payment history page.');
+  }
+
+  function showAccountSettings() {
+    alert('⚙️ Account Settings\n\nIn a real implementation:\n• Manage billing information\n• Update payment methods\n• Set payment preferences\n• Notification settings\n\nThis would redirect to account settings page.');
+  }
+
+  // Add ripple effect to payment cards
+  document.addEventListener('DOMContentLoaded', function () {
+    const paymentCards = document.querySelectorAll('.payment-card');
+
+    paymentCards.forEach(card => {
+      card.addEventListener('click', function (e) {
+        // Create ripple effect
+        const ripple = document.createElement('span');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        ripple.classList.add('ripple');
+
+        this.appendChild(ripple);
+
+        setTimeout(() => {
+          ripple.remove();
+        }, 600);
+      });
+    });
+  });
+</script>

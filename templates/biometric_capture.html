@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="bg-full" style="background-image:url('/assets/ZZZZZZZZZZZZZZZZ.jpg')"></div>
+<h2 class="glass-title">Webcam Capture (Demo)</h2>
+<div class="form">
+  <video id="video" width="320" height="240" autoplay playsinline style="background:#000"></video>
+  <canvas id="canvas" width="320" height="240" style="display:none"></canvas>
+  <div class="form-actions">
+    <button class="btn grey" id="snap">Capture</button>
+    <button class="btn primary" id="upload" disabled>Upload & Verify</button>
+    <a href="{{ url_for('biometric') }}" class="btn grey">Cancel</a>
+  </div>
+</div>
+<script>
+(async function(){
+  const video = document.getElementById('video');
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    video.srcObject = stream;
+  } catch (e) {
+    alert('Unable to access camera: ' + e);
+  }
+  const canvas = document.getElementById('canvas');
+  const snapBtn = document.getElementById('snap');
+  const uploadBtn = document.getElementById('upload');
+  let blob = null;
+  snapBtn.addEventListener('click', (e)=>{
+    e.preventDefault();
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    canvas.toBlob((b)=>{ blob = b; uploadBtn.disabled = !blob; }, 'image/png');
+  });
+  uploadBtn.addEventListener('click', async (e)=>{
+    e.preventDefault();
+    if(!blob){ return; }
+    const fd = new FormData();
+    fd.append('image', blob, 'capture.png');
+    fd.append('action', 'verify');
+    const resp = await fetch("{{ url_for('biometric') }}", { method: 'POST', body: fd });
+    if (resp.redirected) { window.location = resp.url; }
+    else { location.reload(); }
+  });
+})();
+</script>
+{% endblock %}
+
+

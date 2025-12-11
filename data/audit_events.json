@@ -1,0 +1,3963 @@
+{
+  "events": [
+    {
+      "kind": "audit_management",
+      "action": "new_session_started",
+      "username": "admin",
+      "timestamp": "2025-12-09T22:48:02.323979",
+      "details": {
+        "session_started_by": "admin",
+        "previous_logs_archived": false
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T22:48:12.982947",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-09T22:52:44.674193",
+      "details": {
+        "record": {
+          "Patient Name": "Alex Torres",
+          "Doctor Name": "Demo Doctor",
+          "Date": "2024-12-15",
+          "Time": "10:00",
+          "Status": "Scheduled"
+        }
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-09T22:54:25.417515",
+      "details": {
+        "record": {
+          "Patient Name": "Alex Torres",
+          "Doctor Name": "Demo Doctor",
+          "Date": "2025-01-15",
+          "Time": "14:00",
+          "Status": "Scheduled"
+        }
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "update",
+      "username": "system",
+      "timestamp": "2025-12-09T22:54:25.530252",
+      "details": {
+        "record_id": 11,
+        "record": {
+          "Appointment ID": 11,
+          "Patient Name": "Alex gAAAAABpOC4oOPDULLQEyQRDQmCq7bZDdWM3aN2EuvnBKiUOoV5wyxiaV7PsVTm2CyR-aDT61Y0OlA5EmvO9N9CAkYGoSGu1Ow==",
+          "Doctor Name": "Demo Doctor",
+          "Date": "2025-01-15",
+          "Time": "14:00",
+          "Status": "Completed"
+        }
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "delete",
+      "username": "system",
+      "timestamp": "2025-12-09T22:54:25.619144",
+      "details": {
+        "record_id": 11
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-09T22:55:33.015878",
+      "details": {
+        "record": {
+          "Patient Name": "Alex Torres",
+          "Doctor Name": "Demo Doctor",
+          "Date": "2025-01-15",
+          "Time": "14:00",
+          "Status": "Scheduled"
+        }
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "update",
+      "username": "system",
+      "timestamp": "2025-12-09T22:55:33.117281",
+      "details": {
+        "record_id": 12,
+        "record": {
+          "Appointment ID": 12,
+          "Patient Name": "Alex gAAAAABpOC4oOPDULLQEyQRDQmCq7bZDdWM3aN2EuvnBKiUOoV5wyxiaV7PsVTm2CyR-aDT61Y0OlA5EmvO9N9CAkYGoSGu1Ow==",
+          "Doctor Name": "Demo Doctor",
+          "Date": "2025-01-15",
+          "Time": "14:00",
+          "Status": "Completed"
+        }
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "delete",
+      "username": "system",
+      "timestamp": "2025-12-09T22:55:33.197733",
+      "details": {
+        "record_id": 12
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T22:56:08.206771",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T22:56:10.079346",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T22:56:13.210737",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T22:58:45.063352",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T22:58:47.189664",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T22:58:48.793347",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T22:58:52.198523",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T22:58:53.631612",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:02:00.944832",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:02:02.874167",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "patients_db",
+      "action": "update",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:02:15.666167",
+      "details": {
+        "record_id": 1,
+        "record": {
+          "Patient ID": "",
+          "First Name": "Alex",
+          "Last Name": "Torres",
+          "Age": "24",
+          "Gender": "Female",
+          "Contact": "09991234567",
+          "Allergies": "ADD"
+        }
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:02:15.730984",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:02:29.972816",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:02:32.636783",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:02:38.510595",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:02:44.749335",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:02:59.939909",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:03:04.008829",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:03:06.615911",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:03:10.964543",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:03:14.411591",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:03:24.213992",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:03:28.526320",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:03:31.659873",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:03:41.770856",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:03:45.065732",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:03:48.294352",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:03:48.358177",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:03:54.635098",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "diagnoses",
+      "action": "delete",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:03:59.230995",
+      "details": {
+        "record_id": 2
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:03:59.287122",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:04:04.793406",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:04:07.116098",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:04:09.616441",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:04:09.685439",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:04:11.463329",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "prescriptions",
+      "action": "delete",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:04:16.973696",
+      "details": {
+        "record_id": 2
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:04:17.052363",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:04:20.293074",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "prescriptions",
+      "action": "delete",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:04:23.970393",
+      "details": {
+        "record_id": 5
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:04:24.020320",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:04:28.318780",
+      "details": {
+        "module": "medical_store"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:04:44.276494",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:04:50.735543",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:04:55.391915",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:05:09.639206",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:05:15.101427",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:05:21.693771",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:05:25.018712",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:06:21.337948",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:06:24.395429",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:06:36.682507",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:06:38.339066",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:06:49.486258",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:06:54.396293",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "delete",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:06:58.410465",
+      "details": {
+        "record_id": 2
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:06:58.500866",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:07:02.706606",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "delete",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:07:06.683264",
+      "details": {
+        "record_id": 6
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:07:06.765264",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:07:12.186646",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:07:14.860200",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:07:41.138200",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:07:49.111390",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:07:51.862872",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:07:54.569390",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:07:58.132909",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:08:02.284425",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "patients_db",
+      "action": "delete",
+      "username": "test_admin",
+      "timestamp": "2025-12-09T23:13:52.105895",
+      "details": {
+        "record_id": 13
+      }
+    },
+    {
+      "kind": "patients_db",
+      "action": "delete",
+      "username": "test_admin",
+      "timestamp": "2025-12-09T23:18:27.966748",
+      "details": {
+        "record_id": 1
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:28:34.184542",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:28:36.173817",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:28:37.395679",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:29:21.212555",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:29:23.851780",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:29:59.727968",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:30:47.404437",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:30:48.910775",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:30:56.702225",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:30:58.945838",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:31:07.251695",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:31:10.093503",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:31:15.073191",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:31:20.160506",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:31:20.236119",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:31:21.677575",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:31:21.734356",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:31:33.002147",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:31:34.431736",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:32:41.989205",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:32:44.746020",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:32:46.406771",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:32:46.473873",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:32:48.109101",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:32:52.226655",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:32:54.787343",
+      "details": {
+        "module": "medical_store"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:33:24.380855",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:33:27.258393",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:33:28.802188",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:39:05.199634",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:39:07.995587",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:39:09.899569",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:39:11.882685",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-09T23:39:13.963278",
+      "details": {
+        "module": "medical_store"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:40:41.989843",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:40:43.710058",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:41:08.389819",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:41:13.437248",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-09T23:41:17.508179",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "patients_db",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-09T23:41:36.275651",
+      "details": {
+        "record": {
+          "First Name": "Test",
+          "Last Name": "Patient",
+          "Gender": "Male",
+          "Age": "30",
+          "Contact": "1234567890",
+          "Blood Type": "O+",
+          "Allergies": "None"
+        }
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T09:26:26.797368",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T09:29:45.051695",
+      "details": {
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Date": "2024-12-15",
+          "Time": "10:00",
+          "Status": "Scheduled"
+        }
+      }
+    },
+    {
+      "kind": "diagnoses",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T09:30:19.485871",
+      "details": {
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Diagnosis": "Common Cold",
+          "Date": "2024-12-15",
+          "Notes": "Patient has mild symptoms"
+        }
+      }
+    },
+    {
+      "kind": "prescriptions",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T09:30:19.558863",
+      "details": {
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Medications": "Paracetamol 500mg",
+          "Date": "2024-12-15",
+          "Notes": "Take twice daily"
+        }
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T09:30:46.462713",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "admin",
+      "timestamp": "2025-12-10T09:30:57.605914",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T09:30:57.906634",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "admin",
+      "timestamp": "2025-12-10T09:30:59.689785",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T09:30:59.899936",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T09:31:02.618200",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "admin",
+      "timestamp": "2025-12-10T09:31:05.010217",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T09:31:05.137400",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T09:31:07.860338",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T09:31:09.433090",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T09:31:12.856431",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T09:31:15.416609",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T09:32:45.490766",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T09:32:47.497763",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T09:34:36.105155",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T09:34:38.705316",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T09:34:42.687599",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T09:34:45.990521",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T09:35:53.243158",
+      "details": {
+        "record": {
+          "Patient Name": "John Aasa",
+          "Doctor Name": "CMtheDoc",
+          "Date": "2024-12-16",
+          "Time": "14:30",
+          "Status": "Scheduled"
+        }
+      }
+    },
+    {
+      "kind": "diagnoses",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T09:39:28.400819",
+      "details": {
+        "record": {
+          "Patient Name": "John Aasa",
+          "Doctor Name": "CMtheDoc",
+          "Diagnosis": "Hypertension",
+          "Notes": "Blood pressure elevated"
+        }
+      }
+    },
+    {
+      "kind": "prescriptions",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T09:39:49.344246",
+      "details": {
+        "record": {
+          "Patient Name": "John Aasa",
+          "Doctor Name": "CMtheDoc",
+          "Medications": "Lisinopril 10mg",
+          "Notes": "Take once daily with food"
+        }
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T09:40:20.682128",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T09:40:21.274898",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T10:50:49.889279",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T10:50:53.125573",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "update",
+      "username": "system",
+      "timestamp": "2025-12-10T11:01:58.592781",
+      "details": {
+        "record_id": 13,
+        "record": {
+          "Appointment ID": 13,
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Date": "2024-12-15",
+          "Time": "10:00",
+          "Status": "Completed"
+        }
+      }
+    },
+    {
+      "kind": "diagnoses",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:02:09.098712",
+      "details": {
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Diagnosis": "Common Cold",
+          "Date": "2024-12-10",
+          "Notes": "Rest and fluids recommended"
+        }
+      }
+    },
+    {
+      "kind": "prescriptions",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:02:18.400226",
+      "details": {
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Medications": "Amoxicillin 500mg, 3x daily",
+          "Date": "2024-12-10",
+          "Notes": "Take with food, complete full course"
+        }
+      }
+    },
+    {
+      "kind": "patients_db",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:03:28.767880",
+      "details": {
+        "record": {
+          "First Name": "Test",
+          "Last Name": "Patient CRUD",
+          "Age": "30",
+          "Gender": "Other",
+          "Contact": "555-PATIENT",
+          "Allergies": "None"
+        }
+      }
+    },
+    {
+      "kind": "patients_db",
+      "action": "update",
+      "username": "system",
+      "timestamp": "2025-12-10T11:03:28.920281",
+      "details": {
+        "record_id": 15,
+        "record": {
+          "First Name": "Updated",
+          "Last Name": "Patient Updated",
+          "Age": "31",
+          "Gender": "Male",
+          "Contact": "555-UPDATED-PAT",
+          "Allergies": "Peanuts"
+        }
+      }
+    },
+    {
+      "kind": "patients_db",
+      "action": "delete",
+      "username": "system",
+      "timestamp": "2025-12-10T11:03:29.027436",
+      "details": {
+        "record_id": 15
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:03:29.141767",
+      "details": {
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Date": "2024-12-20",
+          "Time": "14:00",
+          "Status": "Scheduled"
+        }
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "update",
+      "username": "system",
+      "timestamp": "2025-12-10T11:03:29.240895",
+      "details": {
+        "record_id": 15,
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Date": "2024-12-21",
+          "Time": "15:00",
+          "Status": "Completed"
+        }
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "delete",
+      "username": "system",
+      "timestamp": "2025-12-10T11:03:29.321446",
+      "details": {
+        "record_id": 15
+      }
+    },
+    {
+      "kind": "diagnoses",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:03:29.407526",
+      "details": {
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Diagnosis": "Test Diagnosis CRUD",
+          "Date": "2025-12-10T11:03:28.616677",
+          "Notes": "Test notes for CRUD"
+        }
+      }
+    },
+    {
+      "kind": "diagnoses",
+      "action": "update",
+      "username": "system",
+      "timestamp": "2025-12-10T11:03:29.488787",
+      "details": {
+        "record_id": 9,
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Diagnosis": "Updated Test Diagnosis",
+          "Date": "2025-12-10T11:03:28.617682",
+          "Notes": "Updated test notes"
+        }
+      }
+    },
+    {
+      "kind": "diagnoses",
+      "action": "delete",
+      "username": "system",
+      "timestamp": "2025-12-10T11:03:29.570504",
+      "details": {
+        "record_id": 9
+      }
+    },
+    {
+      "kind": "prescriptions",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:03:29.661021",
+      "details": {
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Medications": "Test Medication CRUD",
+          "Date": "2025-12-10T11:03:28.617682",
+          "Notes": "Test prescription notes"
+        }
+      }
+    },
+    {
+      "kind": "prescriptions",
+      "action": "update",
+      "username": "system",
+      "timestamp": "2025-12-10T11:03:29.751690",
+      "details": {
+        "record_id": 10,
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Medications": "Updated Test Medication",
+          "Date": "2025-12-10T11:03:28.617682",
+          "Notes": "Updated prescription notes"
+        }
+      }
+    },
+    {
+      "kind": "prescriptions",
+      "action": "delete",
+      "username": "system",
+      "timestamp": "2025-12-10T11:03:29.848673",
+      "details": {
+        "record_id": 10
+      }
+    },
+    {
+      "kind": "medical_store",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:03:29.960742",
+      "details": {
+        "record": {
+          "Name": "Test Item CRUD",
+          "Quantity": "100",
+          "Unit Price": "10.50",
+          "Expiration Date": "2025-12-31",
+          "Notes": "Test item for CRUD"
+        }
+      }
+    },
+    {
+      "kind": "medical_store",
+      "action": "update",
+      "username": "system",
+      "timestamp": "2025-12-10T11:03:30.076560",
+      "details": {
+        "record_id": 4,
+        "record": {
+          "Name": "Updated Test Item",
+          "Quantity": "150",
+          "Unit Price": "12.00",
+          "Expiration Date": "2026-01-31",
+          "Notes": "Updated test item"
+        }
+      }
+    },
+    {
+      "kind": "medical_store",
+      "action": "delete",
+      "username": "system",
+      "timestamp": "2025-12-10T11:03:30.166037",
+      "details": {
+        "record_id": 4
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:13:48.754255",
+      "details": {
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Date": "2025-01-15",
+          "Time": "14:00",
+          "Status": "Scheduled"
+        }
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "update",
+      "username": "system",
+      "timestamp": "2025-12-10T11:13:48.879807",
+      "details": {
+        "record_id": 16,
+        "record": {
+          "Appointment ID": 16,
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Date": "2025-01-15",
+          "Time": "14:00",
+          "Status": "Completed"
+        }
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "delete",
+      "username": "system",
+      "timestamp": "2025-12-10T11:13:48.985368",
+      "details": {
+        "record_id": 16
+      }
+    },
+    {
+      "kind": "diagnoses",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:13:55.907295",
+      "details": {
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Diagnosis": "Common Cold",
+          "Date": "2024-12-10",
+          "Notes": "Rest and fluids recommended"
+        }
+      }
+    },
+    {
+      "kind": "prescriptions",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:14:02.561888",
+      "details": {
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Medications": "Amoxicillin 500mg, 3x daily",
+          "Date": "2024-12-10",
+          "Notes": "Take with food, complete full course"
+        }
+      }
+    },
+    {
+      "kind": "patients_db",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:15:07.368205",
+      "details": {
+        "record": {
+          "First Name": "Test",
+          "Last Name": "Patient",
+          "Age": "30",
+          "Gender": "Male",
+          "Contact": "555-0456",
+          "Allergies": "None"
+        }
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:15:07.555357",
+      "details": {
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Date": "2024-12-15",
+          "Time": "10:00",
+          "Status": "Scheduled"
+        }
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "update",
+      "username": "system",
+      "timestamp": "2025-12-10T11:15:07.643896",
+      "details": {
+        "record_id": 17,
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Date": "2024-12-15",
+          "Time": "10:00",
+          "Status": "Completed"
+        }
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "delete",
+      "username": "system",
+      "timestamp": "2025-12-10T11:15:07.701431",
+      "details": {
+        "record_id": 17
+      }
+    },
+    {
+      "kind": "diagnoses",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:15:07.808058",
+      "details": {
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Diagnosis": "Test Diagnosis",
+          "Date": "2024-12-10",
+          "Notes": "Test notes"
+        }
+      }
+    },
+    {
+      "kind": "diagnoses",
+      "action": "update",
+      "username": "system",
+      "timestamp": "2025-12-10T11:15:07.882634",
+      "details": {
+        "record_id": 11,
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Diagnosis": "Test Diagnosis",
+          "Date": "2024-12-10",
+          "Notes": "Updated test notes"
+        }
+      }
+    },
+    {
+      "kind": "diagnoses",
+      "action": "delete",
+      "username": "system",
+      "timestamp": "2025-12-10T11:15:07.928622",
+      "details": {
+        "record_id": 11
+      }
+    },
+    {
+      "kind": "prescriptions",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:15:08.019241",
+      "details": {
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Medications": "Test Medication 100mg",
+          "Date": "2024-12-10",
+          "Notes": "Take twice daily"
+        }
+      }
+    },
+    {
+      "kind": "prescriptions",
+      "action": "update",
+      "username": "system",
+      "timestamp": "2025-12-10T11:15:08.092360",
+      "details": {
+        "record_id": 12,
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Medications": "Test Medication 100mg",
+          "Date": "2024-12-10",
+          "Notes": "Take three times daily"
+        }
+      }
+    },
+    {
+      "kind": "prescriptions",
+      "action": "delete",
+      "username": "system",
+      "timestamp": "2025-12-10T11:15:08.140057",
+      "details": {
+        "record_id": 12
+      }
+    },
+    {
+      "kind": "doctors",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:15:56.172377",
+      "details": {
+        "record": {
+          "Name": "Test Doctor",
+          "Specialty": "Test",
+          "Contact": "123-456"
+        }
+      }
+    },
+    {
+      "kind": "doctors",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:19.728651",
+      "details": {
+        "record": {
+          "Name": "Dr. Test Smith",
+          "Specialty": "Cardiology",
+          "Contact": "555-0123"
+        }
+      }
+    },
+    {
+      "kind": "doctors",
+      "action": "update",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:19.813215",
+      "details": {
+        "record_id": 1002,
+        "record": {
+          "Name": "Dr. Test Smith",
+          "Specialty": "Neurology",
+          "Contact": "555-0123"
+        }
+      }
+    },
+    {
+      "kind": "doctors",
+      "action": "delete",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:19.873762",
+      "details": {
+        "record_id": 1002
+      }
+    },
+    {
+      "kind": "patients_db",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:19.993322",
+      "details": {
+        "record": {
+          "First Name": "Test",
+          "Last Name": "Patient",
+          "Age": "30",
+          "Gender": "Male",
+          "Contact": "555-0456",
+          "Allergies": "None"
+        }
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:20.133907",
+      "details": {
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Date": "2024-12-15",
+          "Time": "10:00",
+          "Status": "Scheduled"
+        }
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "update",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:20.234453",
+      "details": {
+        "record_id": 18,
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Date": "2024-12-15",
+          "Time": "10:00",
+          "Status": "Completed"
+        }
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "delete",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:20.290990",
+      "details": {
+        "record_id": 18
+      }
+    },
+    {
+      "kind": "diagnoses",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:20.423563",
+      "details": {
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Diagnosis": "Test Diagnosis",
+          "Date": "2024-12-10",
+          "Notes": "Test notes"
+        }
+      }
+    },
+    {
+      "kind": "diagnoses",
+      "action": "update",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:20.523103",
+      "details": {
+        "record_id": 12,
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Diagnosis": "Test Diagnosis",
+          "Date": "2024-12-10",
+          "Notes": "Updated test notes"
+        }
+      }
+    },
+    {
+      "kind": "diagnoses",
+      "action": "delete",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:20.577670",
+      "details": {
+        "record_id": 12
+      }
+    },
+    {
+      "kind": "prescriptions",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:20.701245",
+      "details": {
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Medications": "Test Medication 100mg",
+          "Date": "2024-12-10",
+          "Notes": "Take twice daily"
+        }
+      }
+    },
+    {
+      "kind": "prescriptions",
+      "action": "update",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:20.786788",
+      "details": {
+        "record_id": 13,
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Medications": "Test Medication 100mg",
+          "Date": "2024-12-10",
+          "Notes": "Take three times daily"
+        }
+      }
+    },
+    {
+      "kind": "prescriptions",
+      "action": "delete",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:20.843799",
+      "details": {
+        "record_id": 13
+      }
+    },
+    {
+      "kind": "doctors",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:44.175758",
+      "details": {
+        "record": {
+          "Name": "Dr. Test Smith",
+          "Specialty": "Cardiology",
+          "Contact": "555-0123"
+        }
+      }
+    },
+    {
+      "kind": "doctors",
+      "action": "update",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:44.265403",
+      "details": {
+        "record_id": 1003,
+        "record": {
+          "Name": "Dr. Test Smith",
+          "Specialty": "Neurology",
+          "Contact": "555-0123"
+        }
+      }
+    },
+    {
+      "kind": "doctors",
+      "action": "delete",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:44.335032",
+      "details": {
+        "record_id": 1003
+      }
+    },
+    {
+      "kind": "patients_db",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:44.452655",
+      "details": {
+        "record": {
+          "First Name": "Test",
+          "Last Name": "Patient",
+          "Age": "30",
+          "Gender": "Male",
+          "Contact": "555-0456",
+          "Allergies": "None"
+        }
+      }
+    },
+    {
+      "kind": "patients_db",
+      "action": "update",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:44.552163",
+      "details": {
+        "record_id": 18,
+        "record": {
+          "First Name": "Test",
+          "Last Name": "Patient",
+          "Age": "31",
+          "Gender": "Male",
+          "Contact": "555-0456",
+          "Allergies": "None"
+        }
+      }
+    },
+    {
+      "kind": "patients_db",
+      "action": "delete",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:44.610246",
+      "details": {
+        "record_id": 18
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:44.743308",
+      "details": {
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Date": "2024-12-15",
+          "Time": "10:00",
+          "Status": "Scheduled"
+        }
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "update",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:44.833513",
+      "details": {
+        "record_id": 19,
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Date": "2024-12-15",
+          "Time": "10:00",
+          "Status": "Completed"
+        }
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "delete",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:44.885515",
+      "details": {
+        "record_id": 19
+      }
+    },
+    {
+      "kind": "diagnoses",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:44.986144",
+      "details": {
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Diagnosis": "Test Diagnosis",
+          "Date": "2024-12-10",
+          "Notes": "Test notes"
+        }
+      }
+    },
+    {
+      "kind": "diagnoses",
+      "action": "update",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:45.062748",
+      "details": {
+        "record_id": 13,
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Diagnosis": "Test Diagnosis",
+          "Date": "2024-12-10",
+          "Notes": "Updated test notes"
+        }
+      }
+    },
+    {
+      "kind": "diagnoses",
+      "action": "delete",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:45.116012",
+      "details": {
+        "record_id": 13
+      }
+    },
+    {
+      "kind": "prescriptions",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:45.218141",
+      "details": {
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Medications": "Test Medication 100mg",
+          "Date": "2024-12-10",
+          "Notes": "Take twice daily"
+        }
+      }
+    },
+    {
+      "kind": "prescriptions",
+      "action": "update",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:45.291158",
+      "details": {
+        "record_id": 14,
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Medications": "Test Medication 100mg",
+          "Date": "2024-12-10",
+          "Notes": "Take three times daily"
+        }
+      }
+    },
+    {
+      "kind": "prescriptions",
+      "action": "delete",
+      "username": "system",
+      "timestamp": "2025-12-10T11:16:45.338723",
+      "details": {
+        "record_id": 14
+      }
+    },
+    {
+      "kind": "doctors",
+      "action": "add",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:29:50.113714",
+      "details": {
+        "record": {
+          "ID": "",
+          "Name": "Bongbong Marcos",
+          "Specialty": "General Medicine",
+          "Contact": "09991234567"
+        }
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:29:56.041408",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:29:58.185578",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:30:18.596818",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:30:20.889938",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:30:25.684090",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "patients_db",
+      "action": "delete",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:30:31.160867",
+      "details": {
+        "record_id": 7
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:30:31.241826",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:30:36.103799",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:30:38.609407",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:30:38.665702",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:30:41.313172",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:30:41.371545",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:30:42.899715",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:31:05.800573",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:31:08.007823",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:31:08.071534",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:31:09.585205",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:36:28.763111",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:36:34.753459",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "prescriptions",
+      "action": "add",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:36:46.196155",
+      "details": {
+        "record": {
+          "Prescription ID": "",
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Medications": "asasas",
+          "Date": "2025-12-23",
+          "Notes": "asasasas"
+        }
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:36:46.262906",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:38:05.281314",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:38:12.686407",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:38:18.934584",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:38:25.706933",
+      "details": {
+        "module": "medical_store"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:38:46.771127",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:38:56.494672",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:39:42.232232",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:41:10.594046",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:41:32.438416",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:41:35.294924",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:50:11.755620",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:50:12.124378",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T11:50:15.984018",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "doctors",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T12:03:02.942078",
+      "details": {
+        "record": {
+          "Name": "Dr. Encryption Test",
+          "Specialty": "Test Specialty",
+          "Contact": "555-TEST-ENC"
+        }
+      }
+    },
+    {
+      "kind": "doctors",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T12:03:21.173521",
+      "details": {
+        "record": {
+          "Name": "Dr. Encryption Test",
+          "Specialty": "Test Specialty",
+          "Contact": "555-TEST-ENC"
+        }
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T12:03:21.415481",
+      "details": {
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Date": "2024-12-15",
+          "Time": "14:30",
+          "Status": "Scheduled"
+        }
+      }
+    },
+    {
+      "kind": "doctors",
+      "action": "delete",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:34:30.329084",
+      "details": {
+        "record_id": 1005
+      }
+    },
+    {
+      "kind": "doctors",
+      "action": "delete",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:34:40.135518",
+      "details": {
+        "record_id": 1006
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:34:47.654318",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:34:50.314533",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "delete",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:34:57.862692",
+      "details": {
+        "record_id": 20
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:34:57.927692",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:35:15.714896",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:35:18.394812",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:35:27.398564",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:35:29.557166",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:35:34.303987",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:35:39.956070",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:35:44.732479",
+      "details": {
+        "module": "medical_store"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:35:46.397162",
+      "details": {
+        "module": "medical_store"
+      }
+    },
+    {
+      "kind": "doctors",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T12:38:31.269438",
+      "details": {
+        "record": {
+          "Name": "Dr. Encryption Test",
+          "Specialty": "Test Specialty",
+          "Contact": "555-TEST-ENC"
+        }
+      }
+    },
+    {
+      "kind": "appointments",
+      "action": "add",
+      "username": "system",
+      "timestamp": "2025-12-10T12:38:31.542928",
+      "details": {
+        "record": {
+          "Patient Name": "Jenny Lopez",
+          "Doctor Name": "Demo Doctor",
+          "Date": "2024-12-15",
+          "Time": "14:30",
+          "Status": "Scheduled"
+        }
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:40:59.038363",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:41:01.868910",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:41:16.546905",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:41:20.345252",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:41:33.494891",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:41:46.517735",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:41:48.101399",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:41:52.353023",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:41:53.745709",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:41:53.807722",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:41:57.768155",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:41:59.317309",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:41:59.376425",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:44:16.551385",
+      "details": {
+        "module": "medical_store"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:44:23.163413",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T12:45:04.269911",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T12:45:07.863862",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T12:45:12.059272",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T12:45:15.521103",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T12:45:19.455941",
+      "details": {
+        "module": "medical_store"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T12:45:51.612859",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T12:45:54.280848",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T12:45:54.406163",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T12:45:59.037774",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T12:46:04.577297",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T12:46:08.364625",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T12:51:25.336766",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T12:51:29.424646",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T12:51:36.361662",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T12:51:40.675492",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "user_management",
+      "action": "password_changed",
+      "username": "admin",
+      "timestamp": "2025-12-10T12:53:10.235921",
+      "details": {
+        "method": "reset"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T12:53:21.306220",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:26:59.650947",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:27:57.167321",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:27:57.177334",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:27:58.988934",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:28:01.111287",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:28:01.168103",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:28:01.264569",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:28:05.355097",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:28:06.824345",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:28:10.786910",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:28:10.871578",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:28:16.527393",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:28:16.598400",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:28:16.705245",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:28:22.618501",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:28:22.674780",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:28:28.946949",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:28:32.147785",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:28:36.139748",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "patients_db",
+      "action": "update",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:28:36.400722",
+      "details": {
+        "record_id": 2,
+        "record": {
+          "Patient ID": "",
+          "First Name": "Jenny",
+          "Last Name": "Lopez",
+          "Age": "26",
+          "Gender": "Female",
+          "Contact": "09170002233",
+          "Allergies": "food"
+        }
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:28:36.498906",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:28:40.770885",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:28:43.765435",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:28:52.178320",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:28:52.240065",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:28:52.330916",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T20:28:58.351748",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:45:16.500611",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:45:22.161337",
+      "details": {
+        "module": "doctors"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:45:28.625334",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:45:31.067703",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:45:49.672321",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:45:49.700350",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:45:49.770899",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:45:52.620895",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:45:53.906751",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:45:56.035208",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:45:57.328373",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:46:00.074163",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:46:00.107605",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:46:00.186895",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:46:03.677978",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:46:05.105381",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:46:08.341184",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:46:08.389969",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:46:08.461495",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:46:11.093615",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:46:11.159594",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:46:16.901874",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:46:16.910862",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:46:19.305391",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:46:26.697328",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:46:26.750058",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:46:26.822100",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:46:30.740869",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:46:30.753719",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:46:32.322758",
+      "details": {
+        "module": "medical_store"
+      }
+    },
+    {
+      "kind": "authentication",
+      "action": "logout",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T21:47:39.103754",
+      "details": {
+        "auto_encrypted": true
+      }
+    },
+    {
+      "kind": "user_management",
+      "action": "user_created",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:48:39.738588",
+      "details": {
+        "role": "nurse",
+        "email": "nalitanjohnpaul16@gmail.com"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:51:20.870884",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:51:23.851938",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:51:23.875517",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:51:23.976215",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:51:27.335783",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:51:29.384027",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:51:34.676489",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:51:34.711902",
+      "details": {
+        "module": "patients_db"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:51:36.129532",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:51:38.322743",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:51:42.859981",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "decrypt_all",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:51:42.878952",
+      "details": {
+        "module": "doctors"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:51:45.158640",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:51:47.168943",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:51:49.938575",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:51:55.311780",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:51:57.505237",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:51:58.672234",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:52:00.563591",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:52:01.780160",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:52:06.275514",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:52:07.960120",
+      "details": {
+        "module": "medical_store"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T21:52:13.597184",
+      "details": {
+        "module": "prescriptions"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T22:00:00.038410",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T22:01:06.380619",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T22:02:06.089961",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T22:05:05.750290",
+      "details": {
+        "module": "appointments"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T22:05:21.781176",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T23:05:03.093906",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "authentication",
+      "action": "logout",
+      "username": "veathenurse",
+      "timestamp": "2025-12-10T23:08:34.938769",
+      "details": {
+        "auto_encrypted": true
+      }
+    },
+    {
+      "kind": "authentication",
+      "action": "logout",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-10T23:19:32.544861",
+      "details": {
+        "auto_encrypted": true
+      }
+    },
+    {
+      "kind": "authentication",
+      "action": "logout",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-11T00:58:04.727594",
+      "details": {
+        "auto_encrypted": true
+      }
+    },
+    {
+      "kind": "authentication",
+      "action": "login_failed",
+      "username": "VeastheNurse",
+      "timestamp": "2025-12-11T00:58:14.569179",
+      "details": {
+        "ip": "127.0.0.1"
+      }
+    },
+    {
+      "kind": "authentication",
+      "action": "logout",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-11T01:17:22.781993",
+      "details": {
+        "auto_encrypted": true
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-11T02:03:09.150802",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-11T02:03:16.246884",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-11T02:03:29.533720",
+      "details": {
+        "module": "diagnoses"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "auto_encrypt_all",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-11T02:03:32.431537",
+      "details": {
+        "trigger": "navigation_away"
+      }
+    },
+    {
+      "kind": "data_access",
+      "action": "view_records",
+      "username": "CMtheDoc",
+      "timestamp": "2025-12-11T02:03:35.354455",
+      "details": {
+        "module": "diagnoses"
+      }
+    }
+  ]
+}
