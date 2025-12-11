@@ -49,6 +49,8 @@ def serve_assets(filename):
 @app.route("/")
 def index():
     if session.get("user"):
+        # Auto-encrypt when navigating to home
+        auto_encrypt_all_data()
         return redirect(url_for("overview"))
     return redirect(url_for("login"))
 
@@ -849,10 +851,55 @@ def audit_new_session():
     return redirect(url_for("audit_index"))
 
 
+def auto_encrypt_all_data():
+    """Automatically encrypt all sensitive data when user exits or logs out."""
+    session["patients_db_decrypted"] = False
+    session["patients_db_encrypted"] = True
+    session["doctors_encrypted"] = True
+    session["appointments_encrypted"] = True
+    session["diagnoses_encrypted"] = True
+    session["prescriptions_encrypted"] = True
+
+
+@app.route("/auto-encrypt-all", methods=["POST"])
+@login_required
+def auto_encrypt_all():
+    """Auto-encrypt all data when user navigates away from clinical modules."""
+    auto_encrypt_all_data()
+    
+    # Log auto-encryption event
+    from utils.storage import add_audit_event
+    import datetime
+    add_audit_event({
+        "kind": "data_access",
+        "action": "auto_encrypt_all",
+        "username": session.get("user", "unknown"),
+        "timestamp": datetime.datetime.now().isoformat(),
+        "details": {"trigger": "navigation_away"}
+    })
+    
+    return {"status": "success", "message": "All data encrypted"}
+
+
 @app.route("/logout")
 @login_required
 def logout():
+    # Automatically encrypt all data before logout
+    auto_encrypt_all_data()
+    
+    # Log logout event
+    from utils.storage import add_audit_event
+    import datetime
+    add_audit_event({
+        "kind": "authentication",
+        "action": "logout",
+        "username": session.get("user", "unknown"),
+        "timestamp": datetime.datetime.now().isoformat(),
+        "details": {"auto_encrypted": True}
+    })
+    
     session.clear()
+    flash("Logged out successfully. All data has been automatically encrypted.", "info")
     return redirect(url_for("login"))
 
 
@@ -870,6 +917,8 @@ def inject_user():
 @app.route("/dashboard")
 @login_required
 def dashboard():
+    # Auto-encrypt when navigating to dashboard
+    auto_encrypt_all_data()
     # Summary cards
     try:
         doctors = len(list_records("doctors"))
@@ -944,6 +993,9 @@ def dashboard():
 @app.route("/overview")
 @login_required
 def overview():
+    # Auto-encrypt when navigating to overview
+    auto_encrypt_all_data()
+    
     def capture(fn):
         buf = io.StringIO()
         old = sys.stdout
@@ -1058,11 +1110,11 @@ def list_view(kind):
     # Default is encrypted (True means encrypted, so decrypt_data should be False by default)
     decrypt_data = session.get("patients_db_decrypted", False)
     decrypt_clinical_data = False
-    # Check if clinical data (diagnoses, prescriptions, appointments) should be decrypted
-    if kind in ["diagnoses", "prescriptions"]:
+    # Check if clinical data (diagnoses, prescriptions, appointments, doctors) should be decrypted
+    if kind in ["diagnoses", "prescriptions", "doctors"]:
         decrypt_clinical_data = not session.get(f"{kind}_encrypted", True)
     elif kind == "appointments":
-        decrypt_clinical_data = session.get("appointments_decrypted", False)
+        decrypt_clinical_data = not session.get("appointments_encrypted", True)
     items = list_records(kind, decrypt_patients_db=decrypt_data, decrypt_clinical=decrypt_clinical_data)
     extra_cols = []
     extra_rows = []
@@ -1078,15 +1130,25 @@ def list_view(kind):
         nurse_rows = []
     edit_mode = request.args.get("edit") == "1"
     user_can_edit = can_edit_kind(user, kind)
+    
+    # Require PIN/biometric verification when entering edit mode for clinical modules
+    if edit_mode and kind in ["patients_db", "appointments", "diagnoses", "prescriptions", "doctors"]:
+        now = int(time.time())
+        strong_ok = False
+        if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
+            strong_ok = True
+        if session.get("bio_ok"):
+            strong_ok = True
+        if not strong_ok:
+            return redirect(url_for("verify_pin_route", next=url_for("list_view", kind=kind) + "?edit=1"))
+    
     allow_delete = user_can_edit and kind in {"assets", "threats", "incidents", "bia", "patients", "patients_db", "appointments", "diagnoses", "prescriptions", "medical_store", "doctors"}
     # Check if data is encrypted (default is encrypted = True, decrypted = False)
     encrypted = True
     if kind == "patients_db":
         encrypted = not session.get("patients_db_decrypted", False)
-    elif kind in ["diagnoses", "prescriptions"]:
+    elif kind in ["diagnoses", "prescriptions", "doctors", "appointments"]:
         encrypted = session.get(f"{kind}_encrypted", True)
-    elif kind == "appointments":
-        encrypted = not session.get("appointments_decrypted", False)
     return render_template(
         "list.html",
         kind=kind,
@@ -1110,6 +1172,7 @@ def add_view(kind):
     if not can_edit_kind(session.get("user"), kind):
         flash("You do not have permission to add records.", "error")
         return redirect(url_for("list_view", kind=kind))
+    
     # Require recent PIN OR biometric verification before modifying data
     now = int(time.time())
     strong_ok = False
@@ -1119,18 +1182,24 @@ def add_view(kind):
         strong_ok = True
     if not strong_ok:
         return redirect(url_for("verify_pin_route", next=url_for("add_view", kind=kind)))
+    
     columns = KIND_COLUMNS[kind]
     
-    # Get doctor and patient options for appointments, diagnoses, and prescriptions
+    # Get doctor and patient options for clinical modules
     doctor_options = []
+    patient_options = []
     patient_first_options = []
     patient_last_options = []
+    
     if kind in ["appointments", "diagnoses", "prescriptions"]:
         try:
+            # Get doctors
             doctors = list_records("doctors")
             doctor_options = [d.get('Name', '').strip() for d in doctors if d.get('Name', '').strip()]
-            # Decrypt patient names for dropdown display
+            
+            # Get patients with decrypted names for dropdown display
             patients = list_records("patients_db", decrypt_patients_db=True)
+            patient_options = [f"{p.get('First Name', '')} {p.get('Last Name', '')}".strip() for p in patients if p.get('First Name')]
             patient_first_options = sorted(list(set([p.get('First Name', '').strip() for p in patients if p.get('First Name')])))
             patient_last_options = sorted(list(set([p.get('Last Name', '').strip() for p in patients if p.get('Last Name')])))
             
@@ -1150,10 +1219,13 @@ def add_view(kind):
             # Validate required fields (skip ID fields as they can be auto-generated)
             id_fields = ["ID", "Patient ID", "Appointment ID", "Diagnosis ID", "Prescription ID", "Item ID"]
             missing_fields = [col for col in columns if not new_item.get(col) and col not in id_fields]
-            if missing_fields and kind not in ["patients", "bia", "assets", "threats", "incidents", "doctors"]:
+            
+            # Special validation for clinical modules
+            if kind in ["appointments", "diagnoses", "prescriptions", "patients_db", "doctors"] and missing_fields:
                 flash(f"Missing required fields: {', '.join(missing_fields)}", "error")
                 return render_template("edit.html", kind=kind, columns=columns, values=new_item, 
-                                     doctor_options=doctor_options, patient_first_options=patient_first_options, patient_last_options=patient_last_options)
+                                     doctor_options=doctor_options, patient_options=patient_options,
+                                     patient_first_options=patient_first_options, patient_last_options=patient_last_options)
             
             # Encrypt sensitive fields for JSON-based patients
             if kind == "patients":
@@ -1174,10 +1246,15 @@ def add_view(kind):
                     logger.error(f"Failed to add {kind} record: {new_item}")
                     if kind in ["appointments", "diagnoses", "prescriptions"]:
                         flash(f"Failed to add {kind[:-1]}. Please ensure the patient and doctor exist in the system.", "error")
+                    elif kind == "doctors":
+                        flash("Failed to add doctor. Please check that all required fields are filled correctly.", "error")
+                    elif kind == "patients_db":
+                        flash("Failed to add patient. Please check that all required fields are filled correctly.", "error")
                     else:
                         flash("Failed to add record to database. Please check your input and try again.", "error")
                     return render_template("edit.html", kind=kind, columns=columns, values=new_item,
-                                         doctor_options=doctor_options, patient_first_options=patient_first_options, patient_last_options=patient_last_options)
+                                         doctor_options=doctor_options, patient_options=patient_options,
+                                         patient_first_options=patient_first_options, patient_last_options=patient_last_options)
                 else:
                     flash("Record added successfully.", "success")
                 return redirect(url_for("list_view", kind=kind))
@@ -1188,15 +1265,18 @@ def add_view(kind):
             save_records(kind, items)
             flash("Record added successfully.", "success")
             return redirect(url_for("list_view", kind=kind))
+            
         except Exception as e:
             logger.error(f"Error adding {kind} record: {str(e)}")
             flash(f"An error occurred while adding the record: {str(e)}", "error")
             return render_template("edit.html", kind=kind, columns=columns, 
                                  values=new_item if 'new_item' in locals() else {},
-                                 doctor_options=doctor_options, patient_first_options=patient_first_options, patient_last_options=patient_last_options)
+                                 doctor_options=doctor_options, patient_options=patient_options,
+                                 patient_first_options=patient_first_options, patient_last_options=patient_last_options)
     
     return render_template("edit.html", kind=kind, columns=columns, values={},
-                         doctor_options=doctor_options, patient_first_options=patient_first_options, patient_last_options=patient_last_options)
+                         doctor_options=doctor_options, patient_options=patient_options,
+                         patient_first_options=patient_first_options, patient_last_options=patient_last_options)
 
 
 @app.route("/records/<kind>/edit/<int:index>", methods=["GET", "POST"]) 
@@ -1207,6 +1287,7 @@ def edit_view(kind, index):
     if not can_edit_kind(session.get("user"), kind):
         flash("You do not have permission to edit records.", "error")
         return redirect(url_for("list_view", kind=kind))
+    
     # Require recent PIN OR biometric verification before modifying data
     now = int(time.time())
     strong_ok = False
@@ -1216,165 +1297,220 @@ def edit_view(kind, index):
         strong_ok = True
     if not strong_ok:
         return redirect(url_for("verify_pin_route", next=url_for("edit_view", kind=kind, index=index)))
+    
     columns = KIND_COLUMNS[kind]
-    items = list_records(kind)
+    
+    # Get records with proper decryption for display
+    decrypt_data = False
+    if kind == "patients_db":
+        decrypt_data = session.get("patients_db_decrypted", False)
+    elif kind in ["diagnoses", "prescriptions"]:
+        decrypt_data = not session.get(f"{kind}_encrypted", True)
+    elif kind == "appointments":
+        decrypt_data = not session.get("appointments_encrypted", True)
+    
+    items = list_records(kind, decrypt_patients_db=decrypt_data, decrypt_clinical=decrypt_data)
     if index < 0 or index >= len(items):
         return ("Not found", 404)
     
-    # Get doctor and patient options for appointments, diagnoses, and prescriptions
+    # Get doctor and patient options for clinical modules
     doctor_options = []
     patient_options = []
+    patient_first_options = []
+    patient_last_options = []
+    
     if kind in ["appointments", "diagnoses", "prescriptions"]:
         try:
+            # Get doctors
             doctors = list_records("doctors")
             doctor_options = [d.get('Name', '').strip() for d in doctors if d.get('Name', '').strip()]
-            # Decrypt patient names for dropdown display
+            
+            # Get patients with decrypted names for dropdown display
             patients = list_records("patients_db", decrypt_patients_db=True)
             patient_options = [f"{p.get('First Name', '')} {p.get('Last Name', '')}".strip() for p in patients if p.get('First Name')]
+            patient_first_options = sorted(list(set([p.get('First Name', '').strip() for p in patients if p.get('First Name')])))
+            patient_last_options = sorted(list(set([p.get('Last Name', '').strip() for p in patients if p.get('Last Name')])))
+            
+            # Validate that we have both doctors and patients
+            if not doctor_options:
+                flash(f"No doctors found in the system. Please add doctors before editing {kind}.", "warning")
+            if not patient_first_options:
+                flash(f"No patients found in the system. Please add patients before editing {kind}.", "warning")
         except Exception as e:
             logger.error(f"Error loading {kind} options in edit: {e}")
+            flash("Error loading doctors and patients. Please try again.", "error")
     
-    # Handle decrypt action for patients_db and appointments
-    decrypted = False
     if request.method == "POST":
         action = request.form.get("action", "")
         
-        # If decrypt button clicked for patients_db
-        if action == "decrypt" and kind == "patients_db":
+        # Handle decrypt action for individual records
+        if action == "decrypt":
             decrypted_values = dict(items[index])
-            # Decrypt Last Name
-            raw_last_name = decrypted_values.get("Last Name", "")
-            if raw_last_name and str(raw_last_name).startswith("gAAAA"):
-                try:
-                    decrypted_values["Last Name"] = decrypt_text(str(raw_last_name))
-                except Exception:
-                    pass
-            # Decrypt Contact
-            raw_contact = decrypted_values.get("Contact", "")
-            if raw_contact and str(raw_contact).startswith("gAAAA"):
-                try:
-                    decrypted_values["Contact"] = decrypt_text(str(raw_contact))
-                except Exception:
-                    pass
-            # Decrypt Allergies
-            raw_allergies = decrypted_values.get("Allergies", "")
-            if raw_allergies and str(raw_allergies).startswith("gAAAA"):
-                try:
-                    decrypted_values["Allergies"] = decrypt_text(str(raw_allergies))
-                except Exception:
-                    pass
-            return render_template("edit.html", kind=kind, columns=columns, values=decrypted_values, index=index, decrypted=True,
-                                 doctor_options=doctor_options, patient_options=patient_options)
-        
-        # If decrypt button clicked for appointments
-        if action == "decrypt" and kind == "appointments":
-            decrypted_values = dict(items[index])
-            # Decrypt Patient Name
-            raw_patient = decrypted_values.get("Patient Name", "")
-            if raw_patient and str(raw_patient).startswith("gAAAA"):
-                try:
-                    decrypted_values["Patient Name"] = decrypt_text(str(raw_patient))
-                except Exception:
-                    pass
-            # Decrypt Doctor Name
-            raw_doctor = decrypted_values.get("Doctor Name", "")
-            if raw_doctor and str(raw_doctor).startswith("gAAAA"):
-                try:
-                    decrypted_values["Doctor Name"] = decrypt_text(str(raw_doctor))
-                except Exception:
-                    pass
-            # Decrypt Status
-            raw_status = decrypted_values.get("Status", "")
-            if raw_status and str(raw_status).startswith("gAAAA"):
-                try:
-                    decrypted_values["Status"] = decrypt_text(str(raw_status))
-                except Exception:
-                    pass
-            return render_template("edit.html", kind=kind, columns=columns, values=decrypted_values, index=index, decrypted=True,
-                                 doctor_options=doctor_options, patient_options=patient_options)
-        
-        # If decrypt button clicked for diagnoses
-        if action == "decrypt" and kind == "diagnoses":
-            decrypted_values = dict(items[index])
-            # Decrypt Diagnosis
-            raw_diagnosis = decrypted_values.get("Diagnosis", "")
-            if raw_diagnosis and str(raw_diagnosis).startswith("gAAAA"):
-                try:
-                    decrypted_values["Diagnosis"] = decrypt_text(str(raw_diagnosis))
-                except Exception:
-                    pass
-            # Decrypt Notes
-            raw_notes = decrypted_values.get("Notes", "")
-            if raw_notes and str(raw_notes).startswith("gAAAA"):
-                try:
-                    decrypted_values["Notes"] = decrypt_text(str(raw_notes))
-                except Exception:
-                    pass
-            return render_template("edit.html", kind=kind, columns=columns, values=decrypted_values, index=index, decrypted=True,
-                                 doctor_options=doctor_options, patient_options=patient_options)
-        
-        # If decrypt button clicked for prescriptions
-        if action == "decrypt" and kind == "prescriptions":
-            decrypted_values = dict(items[index])
-            # Decrypt Medications
-            raw_medications = decrypted_values.get("Medications", "")
-            if raw_medications and str(raw_medications).startswith("gAAAA"):
-                try:
-                    decrypted_values["Medications"] = decrypt_text(str(raw_medications))
-                except Exception:
-                    pass
-            # Decrypt Notes
-            raw_notes = decrypted_values.get("Notes", "")
-            if raw_notes and str(raw_notes).startswith("gAAAA"):
-                try:
-                    decrypted_values["Notes"] = decrypt_text(str(raw_notes))
-                except Exception:
-                    pass
-            return render_template("edit.html", kind=kind, columns=columns, values=decrypted_values, index=index, decrypted=True,
-                                 doctor_options=doctor_options, patient_options=patient_options)
+            
+            if kind == "patients_db":
+                # Decrypt Last Name
+                raw_last_name = decrypted_values.get("Last Name", "")
+                if raw_last_name and str(raw_last_name).startswith("gAAAA"):
+                    try:
+                        decrypted_values["Last Name"] = decrypt_text(str(raw_last_name))
+                    except Exception:
+                        pass
+                # Decrypt Contact
+                raw_contact = decrypted_values.get("Contact", "")
+                if raw_contact and str(raw_contact).startswith("gAAAA"):
+                    try:
+                        decrypted_values["Contact"] = decrypt_text(str(raw_contact))
+                    except Exception:
+                        pass
+                # Decrypt Allergies
+                raw_allergies = decrypted_values.get("Allergies", "")
+                if raw_allergies and str(raw_allergies).startswith("gAAAA"):
+                    try:
+                        decrypted_values["Allergies"] = decrypt_text(str(raw_allergies))
+                    except Exception:
+                        pass
+            
+            elif kind == "appointments":
+                # Decrypt Patient Name
+                raw_patient = decrypted_values.get("Patient Name", "")
+                if raw_patient and str(raw_patient).startswith("gAAAA"):
+                    try:
+                        decrypted_values["Patient Name"] = decrypt_text(str(raw_patient))
+                    except Exception:
+                        pass
+                # Decrypt Doctor Name
+                raw_doctor = decrypted_values.get("Doctor Name", "")
+                if raw_doctor and str(raw_doctor).startswith("gAAAA"):
+                    try:
+                        decrypted_values["Doctor Name"] = decrypt_text(str(raw_doctor))
+                    except Exception:
+                        pass
+                # Decrypt Status
+                raw_status = decrypted_values.get("Status", "")
+                if raw_status and str(raw_status).startswith("gAAAA"):
+                    try:
+                        decrypted_values["Status"] = decrypt_text(str(raw_status))
+                    except Exception:
+                        pass
+            
+            elif kind == "diagnoses":
+                # Decrypt Diagnosis
+                raw_diagnosis = decrypted_values.get("Diagnosis", "")
+                if raw_diagnosis and str(raw_diagnosis).startswith("gAAAA"):
+                    try:
+                        decrypted_values["Diagnosis"] = decrypt_text(str(raw_diagnosis))
+                    except Exception:
+                        pass
+                # Decrypt Notes
+                raw_notes = decrypted_values.get("Notes", "")
+                if raw_notes and str(raw_notes).startswith("gAAAA"):
+                    try:
+                        decrypted_values["Notes"] = decrypt_text(str(raw_notes))
+                    except Exception:
+                        pass
+            
+            elif kind == "prescriptions":
+                # Decrypt Medications
+                raw_medications = decrypted_values.get("Medications", "")
+                if raw_medications and str(raw_medications).startswith("gAAAA"):
+                    try:
+                        decrypted_values["Medications"] = decrypt_text(str(raw_medications))
+                    except Exception:
+                        pass
+                # Decrypt Notes
+                raw_notes = decrypted_values.get("Notes", "")
+                if raw_notes and str(raw_notes).startswith("gAAAA"):
+                    try:
+                        decrypted_values["Notes"] = decrypt_text(str(raw_notes))
+                    except Exception:
+                        pass
+            
+            return render_template("edit.html", kind=kind, columns=columns, values=decrypted_values, 
+                                 index=index, decrypted=True, doctor_options=doctor_options, 
+                                 patient_options=patient_options, patient_first_options=patient_first_options, 
+                                 patient_last_options=patient_last_options)
         
         # Handle save action
-        updated = {col: request.form.get(col, "").strip() for col in columns}
-        if kind == "patients":
-            if updated.get("Diagnosis") and not str(updated.get("Diagnosis", "")).startswith("gAAAA"):
-                updated["Diagnosis"] = encrypt_text(updated.get("Diagnosis", ""))
-            if updated.get("Blood Type") and not str(updated.get("Blood Type", "")).startswith("gAAAA"):
-                updated["Blood Type"] = encrypt_text(updated.get("Blood Type", ""))
-            if updated.get("Amount") and not str(updated.get("Amount", "")).startswith("gAAAA"):
-                updated["Amount"] = encrypt_text(updated.get("Amount", ""))
-            if updated.get("Phone Number") and not str(updated.get("Phone Number", "")).startswith("gAAAA"):
-                updated["Phone Number"] = encrypt_text(updated.get("Phone Number", ""))
-        clinical_mysql_kinds = {"patients_db", "appointments", "diagnoses", "prescriptions", "medical_store", "doctors"}
-        if kind in clinical_mysql_kinds:
-            id_key_map = {
-                "patients_db": "Patient ID",
-                "appointments": "Appointment ID",
-                "diagnoses": "Diagnosis ID",
-                "prescriptions": "Prescription ID",
-                "medical_store": "Item ID",
-                "doctors": "ID",
-            }
-            id_key = id_key_map.get(kind)
-            raw_id = items[index].get(id_key) if id_key else None
-            try:
-                db_id = int(raw_id) if raw_id is not None else 0
-            except Exception:
-                db_id = 0
-            if not db_id:
-                flash("Invalid record identifier.", "error")
+        try:
+            updated = {col: request.form.get(col, "").strip() for col in columns}
+            
+            # Validate required fields (skip ID fields as they're auto-generated)
+            id_fields = ["ID", "Patient ID", "Appointment ID", "Diagnosis ID", "Prescription ID", "Item ID"]
+            missing_fields = [col for col in columns if not updated.get(col) and col not in id_fields]
+            if missing_fields and kind in ["appointments", "diagnoses", "prescriptions", "patients_db", "doctors"]:
+                flash(f"Missing required fields: {', '.join(missing_fields)}", "error")
+                return render_template("edit.html", kind=kind, columns=columns, values=updated, 
+                                     index=index, decrypted=False, doctor_options=doctor_options,
+                                     patient_options=patient_options, patient_first_options=patient_first_options,
+                                     patient_last_options=patient_last_options)
+            
+            # Handle JSON-based patients encryption
+            if kind == "patients":
+                if updated.get("Diagnosis") and not str(updated.get("Diagnosis", "")).startswith("gAAAA"):
+                    updated["Diagnosis"] = encrypt_text(updated.get("Diagnosis", ""))
+                if updated.get("Blood Type") and not str(updated.get("Blood Type", "")).startswith("gAAAA"):
+                    updated["Blood Type"] = encrypt_text(updated.get("Blood Type", ""))
+                if updated.get("Amount") and not str(updated.get("Amount", "")).startswith("gAAAA"):
+                    updated["Amount"] = encrypt_text(updated.get("Amount", ""))
+                if updated.get("Phone Number") and not str(updated.get("Phone Number", "")).startswith("gAAAA"):
+                    updated["Phone Number"] = encrypt_text(updated.get("Phone Number", ""))
+            
+            # Handle MySQL-backed modules
+            clinical_mysql_kinds = {"patients_db", "appointments", "diagnoses", "prescriptions", "medical_store", "doctors"}
+            if kind in clinical_mysql_kinds:
+                id_key_map = {
+                    "patients_db": "Patient ID",
+                    "appointments": "Appointment ID",
+                    "diagnoses": "Diagnosis ID",
+                    "prescriptions": "Prescription ID",
+                    "medical_store": "Item ID",
+                    "doctors": "ID",
+                }
+                id_key = id_key_map.get(kind)
+                raw_id = items[index].get(id_key) if id_key else None
+                try:
+                    db_id = int(raw_id) if raw_id is not None else 0
+                except Exception:
+                    db_id = 0
+                
+                if not db_id:
+                    flash("Invalid record identifier.", "error")
+                    return redirect(url_for("list_view", kind=kind))
+                
+                ok = update_mysql_record(kind, db_id, updated, username=session.get("user", "system"))
+                if not ok:
+                    logger.error(f"Failed to update {kind} record: {updated}")
+                    if kind in ["appointments", "diagnoses", "prescriptions"]:
+                        flash(f"Failed to update {kind[:-1]}. Please ensure the patient and doctor exist in the system.", "error")
+                    else:
+                        flash("Failed to update record in database. Please check your input and try again.", "error")
+                    return render_template("edit.html", kind=kind, columns=columns, values=updated,
+                                         index=index, decrypted=False, doctor_options=doctor_options,
+                                         patient_options=patient_options, patient_first_options=patient_first_options,
+                                         patient_last_options=patient_last_options)
+                else:
+                    flash("Record updated successfully.", "success")
                 return redirect(url_for("list_view", kind=kind))
-            ok = update_mysql_record(kind, db_id, updated, username=session.get("user", "system"))
-            if not ok:
-                flash("Failed to update record in database.", "error")
-            else:
-                flash("Record updated.")
+            
+            # Handle JSON-based modules
+            items[index] = updated
+            save_records(kind, items)
+            flash("Record updated successfully.", "success")
             return redirect(url_for("list_view", kind=kind))
-        items[index] = updated
-        save_records(kind, items)
-        flash("Record updated.")
-        return redirect(url_for("list_view", kind=kind))
-    return render_template("edit.html", kind=kind, columns=columns, values=items[index], index=index, decrypted=False,
-                         doctor_options=doctor_options, patient_options=patient_options)
+            
+        except Exception as e:
+            logger.error(f"Error updating {kind} record: {str(e)}")
+            flash(f"An error occurred while updating the record: {str(e)}", "error")
+            return render_template("edit.html", kind=kind, columns=columns, 
+                                 values=updated if 'updated' in locals() else items[index],
+                                 index=index, decrypted=False, doctor_options=doctor_options,
+                                 patient_options=patient_options, patient_first_options=patient_first_options,
+                                 patient_last_options=patient_last_options)
+    
+    return render_template("edit.html", kind=kind, columns=columns, values=items[index], 
+                         index=index, decrypted=False, doctor_options=doctor_options, 
+                         patient_options=patient_options, patient_first_options=patient_first_options,
+                         patient_last_options=patient_last_options)
 
 
 @app.route("/records/<kind>/delete/<int:index>", methods=["POST"]) 
@@ -1385,6 +1521,7 @@ def delete_view(kind, index):
     if not can_edit_kind(session.get("user"), kind):
         flash("You do not have permission to delete records.", "error")
         return redirect(url_for("list_view", kind=kind))
+    
     # Require recent PIN OR biometric verification before modifying data
     now = int(time.time())
     strong_ok = False
@@ -1394,35 +1531,48 @@ def delete_view(kind, index):
         strong_ok = True
     if not strong_ok:
         return redirect(url_for("verify_pin_route", next=url_for("list_view", kind=kind)))
+    
     items = list_records(kind)
     if 0 <= index < len(items):
-        clinical_mysql_kinds = {"patients_db", "appointments", "diagnoses", "prescriptions", "medical_store"}
-        if kind in clinical_mysql_kinds:
-            id_key_map = {
-                "patients_db": "Patient ID",
-                "appointments": "Appointment ID",
-                "diagnoses": "Diagnosis ID",
-                "prescriptions": "Prescription ID",
-                "medical_store": "Item ID",
-            }
-            id_key = id_key_map.get(kind)
-            raw_id = items[index].get(id_key) if id_key else None
-            try:
-                db_id = int(raw_id) if raw_id is not None else 0
-            except Exception:
-                db_id = 0
-            if not db_id:
-                flash("Invalid record identifier.", "error")
-            else:
-                ok = delete_mysql_record(kind, db_id, username=session.get("user", "system"))
-                if not ok:
-                    flash("Failed to delete record from database.", "error")
+        try:
+            # Handle MySQL-backed modules
+            clinical_mysql_kinds = {"patients_db", "appointments", "diagnoses", "prescriptions", "medical_store", "doctors"}
+            if kind in clinical_mysql_kinds:
+                id_key_map = {
+                    "patients_db": "Patient ID",
+                    "appointments": "Appointment ID",
+                    "diagnoses": "Diagnosis ID",
+                    "prescriptions": "Prescription ID",
+                    "medical_store": "Item ID",
+                    "doctors": "ID",
+                }
+                id_key = id_key_map.get(kind)
+                raw_id = items[index].get(id_key) if id_key else None
+                try:
+                    db_id = int(raw_id) if raw_id is not None else 0
+                except Exception:
+                    db_id = 0
+                
+                if not db_id:
+                    flash("Invalid record identifier.", "error")
                 else:
-                    flash("Record deleted.")
-        else:
-            del items[index]
-            save_records(kind, items)
-            flash("Record deleted.")
+                    ok = delete_mysql_record(kind, db_id, username=session.get("user", "system"))
+                    if not ok:
+                        logger.error(f"Failed to delete {kind} record with ID {db_id}")
+                        flash("Failed to delete record from database.", "error")
+                    else:
+                        flash("Record deleted successfully.", "success")
+            else:
+                # Handle JSON-based modules
+                del items[index]
+                save_records(kind, items)
+                flash("Record deleted successfully.", "success")
+        except Exception as e:
+            logger.error(f"Error deleting {kind} record: {str(e)}")
+            flash(f"An error occurred while deleting the record: {str(e)}", "error")
+    else:
+        flash("Record not found.", "error")
+    
     return redirect(url_for("list_view", kind=kind))
 
 
@@ -1430,7 +1580,29 @@ def delete_view(kind, index):
 @login_required
 def patients_db_decrypt():
     """Decrypt all patients_db records for viewing."""
+    # Require PIN/biometric verification
+    now = int(time.time())
+    strong_ok = False
+    if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
+        strong_ok = True
+    if session.get("bio_ok"):
+        strong_ok = True
+    if not strong_ok:
+        return redirect(url_for("verify_pin_route", next=url_for("patients_db_decrypt")))
+    
     session["patients_db_decrypted"] = True
+    
+    # Log decryption event
+    from utils.storage import add_audit_event
+    import datetime
+    add_audit_event({
+        "kind": "data_access",
+        "action": "decrypt_all",
+        "username": session.get("user", "unknown"),
+        "timestamp": datetime.datetime.now().isoformat(),
+        "details": {"module": "patients_db"}
+    })
+    
     flash("Patient records decrypted for viewing.", "success")
     return redirect(url_for("list_view", kind="patients_db"))
 
@@ -1498,7 +1670,29 @@ def patients_encrypt(index):
 @login_required
 def diagnoses_decrypt():
     """Decrypt all diagnoses records for viewing."""
+    # Require PIN/biometric verification
+    now = int(time.time())
+    strong_ok = False
+    if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
+        strong_ok = True
+    if session.get("bio_ok"):
+        strong_ok = True
+    if not strong_ok:
+        return redirect(url_for("verify_pin_route", next=url_for("diagnoses_decrypt")))
+    
     session["diagnoses_decrypted"] = True
+    
+    # Log decryption event
+    from utils.storage import add_audit_event
+    import datetime
+    add_audit_event({
+        "kind": "data_access",
+        "action": "decrypt_all",
+        "username": session.get("user", "unknown"),
+        "timestamp": datetime.datetime.now().isoformat(),
+        "details": {"module": "diagnoses"}
+    })
+    
     flash("Diagnosis records decrypted for viewing.", "success")
     return redirect(url_for("list_view", kind="diagnoses"))
 
@@ -1516,7 +1710,29 @@ def diagnoses_encrypt():
 @login_required
 def prescriptions_decrypt():
     """Decrypt all prescriptions records for viewing."""
+    # Require PIN/biometric verification
+    now = int(time.time())
+    strong_ok = False
+    if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
+        strong_ok = True
+    if session.get("bio_ok"):
+        strong_ok = True
+    if not strong_ok:
+        return redirect(url_for("verify_pin_route", next=url_for("prescriptions_decrypt")))
+    
     session["prescriptions_decrypted"] = True
+    
+    # Log decryption event
+    from utils.storage import add_audit_event
+    import datetime
+    add_audit_event({
+        "kind": "data_access",
+        "action": "decrypt_all",
+        "username": session.get("user", "unknown"),
+        "timestamp": datetime.datetime.now().isoformat(),
+        "details": {"module": "prescriptions"}
+    })
+    
     flash("Prescription records decrypted for viewing.", "success")
     return redirect(url_for("list_view", kind="prescriptions"))
 
@@ -1663,11 +1879,21 @@ def export_csv(kind):
     return resp
 
 
-@app.route("/records/patients_db/decrypt_all", methods=["POST"])
+@app.route("/records/patients_db/decrypt_all", methods=["GET", "POST"])
 @login_required
 def patients_db_decrypt_all():
-    """Decrypt all patients_db records for viewing (including last names)."""
-    session["patients_db_decrypted"] = True
+    """Decrypt all patients_db records for viewing."""
+    # Require PIN/biometric verification
+    now = int(time.time())
+    strong_ok = False
+    if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
+        strong_ok = True
+    if session.get("bio_ok"):
+        strong_ok = True
+    if not strong_ok:
+        return redirect(url_for("verify_pin_route", next=url_for("patients_db_decrypt_all")))
+    
+    session["patients_db_encrypted"] = False
     
     # Log decryption event
     from utils.storage import add_audit_event
@@ -1677,44 +1903,39 @@ def patients_db_decrypt_all():
         "action": "decrypt_all",
         "username": session.get("user", "unknown"),
         "timestamp": datetime.datetime.now().isoformat(),
-        "details": {"module": "patients_db", "includes_last_names": True}
+        "details": {"module": "patients_db"}
     })
     
-    flash("All patient records decrypted for viewing (including last names).", "success")
+    flash("All patient records decrypted for viewing.", "success")
     return redirect(url_for("list_view", kind="patients_db"))
 
 
 @app.route("/records/patients_db/encrypt_all", methods=["POST"])
 @login_required
 def patients_db_encrypt_all():
-    """Re-encrypt all patients_db records (including last names)."""
-    session["patients_db_decrypted"] = False
-    flash("All patient records encrypted (including last names).", "success")
+    """Re-encrypt all patients_db records."""
+    session["patients_db_encrypted"] = True
+    flash("All patient records encrypted.", "success")
     return redirect(url_for("list_view", kind="patients_db"))
 
 
-@app.route("/records/appointments/decrypt_all", methods=["POST"])
-@login_required
-def appointments_decrypt_all():
-    """Decrypt all appointments records for viewing."""
-    session["appointments_decrypted"] = True
-    flash("All appointment records decrypted for viewing.", "success")
-    return redirect(url_for("list_view", kind="appointments"))
 
 
-@app.route("/records/appointments/encrypt_all", methods=["POST"])
-@login_required
-def appointments_encrypt_all():
-    """Re-encrypt all appointments records."""
-    session["appointments_decrypted"] = False
-    flash("All appointment records encrypted.", "success")
-    return redirect(url_for("list_view", kind="appointments"))
 
-
-@app.route("/records/diagnoses/decrypt_all", methods=["POST"])
+@app.route("/records/diagnoses/decrypt_all", methods=["GET", "POST"])
 @login_required
 def diagnoses_decrypt_all():
     """Decrypt all diagnoses records for viewing."""
+    # Require PIN/biometric verification
+    now = int(time.time())
+    strong_ok = False
+    if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
+        strong_ok = True
+    if session.get("bio_ok"):
+        strong_ok = True
+    if not strong_ok:
+        return redirect(url_for("verify_pin_route", next=url_for("diagnoses_decrypt_all")))
+    
     session["diagnoses_encrypted"] = False
     
     # Log decryption event
@@ -1741,10 +1962,20 @@ def diagnoses_encrypt_all():
     return redirect(url_for("list_view", kind="diagnoses"))
 
 
-@app.route("/records/prescriptions/decrypt_all", methods=["POST"])
+@app.route("/records/prescriptions/decrypt_all", methods=["GET", "POST"])
 @login_required
 def prescriptions_decrypt_all():
     """Decrypt all prescriptions records for viewing."""
+    # Require PIN/biometric verification
+    now = int(time.time())
+    strong_ok = False
+    if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
+        strong_ok = True
+    if session.get("bio_ok"):
+        strong_ok = True
+    if not strong_ok:
+        return redirect(url_for("verify_pin_route", next=url_for("prescriptions_decrypt_all")))
+    
     session["prescriptions_encrypted"] = False
     
     # Log decryption event
@@ -1771,6 +2002,86 @@ def prescriptions_encrypt_all():
     return redirect(url_for("list_view", kind="prescriptions"))
 
 
+@app.route("/records/doctors/decrypt_all", methods=["GET", "POST"])
+@login_required
+def doctors_decrypt_all():
+    """Decrypt all doctors records for viewing."""
+    # Require PIN/biometric verification
+    now = int(time.time())
+    strong_ok = False
+    if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
+        strong_ok = True
+    if session.get("bio_ok"):
+        strong_ok = True
+    if not strong_ok:
+        return redirect(url_for("verify_pin_route", next=url_for("doctors_decrypt_all")))
+    
+    session["doctors_encrypted"] = False
+    
+    # Log decryption event
+    from utils.storage import add_audit_event
+    import datetime
+    add_audit_event({
+        "kind": "data_access",
+        "action": "decrypt_all",
+        "username": session.get("user", "unknown"),
+        "timestamp": datetime.datetime.now().isoformat(),
+        "details": {"module": "doctors"}
+    })
+    
+    flash("All doctor records decrypted for viewing.", "success")
+    return redirect(url_for("list_view", kind="doctors"))
+
+
+@app.route("/records/doctors/encrypt_all", methods=["POST"])
+@login_required
+def doctors_encrypt_all():
+    """Re-encrypt all doctors records."""
+    session["doctors_encrypted"] = True
+    flash("All doctor records encrypted.", "success")
+    return redirect(url_for("list_view", kind="doctors"))
+
+
+@app.route("/records/appointments/decrypt_all", methods=["GET", "POST"])
+@login_required
+def appointments_decrypt_all():
+    """Decrypt all appointments records for viewing."""
+    # Require PIN/biometric verification
+    now = int(time.time())
+    strong_ok = False
+    if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
+        strong_ok = True
+    if session.get("bio_ok"):
+        strong_ok = True
+    if not strong_ok:
+        return redirect(url_for("verify_pin_route", next=url_for("appointments_decrypt_all")))
+    
+    session["appointments_encrypted"] = False
+    
+    # Log decryption event
+    from utils.storage import add_audit_event
+    import datetime
+    add_audit_event({
+        "kind": "data_access",
+        "action": "decrypt_all",
+        "username": session.get("user", "unknown"),
+        "timestamp": datetime.datetime.now().isoformat(),
+        "details": {"module": "appointments"}
+    })
+    
+    flash("All appointment records decrypted for viewing.", "success")
+    return redirect(url_for("list_view", kind="appointments"))
+
+
+@app.route("/records/appointments/encrypt_all", methods=["POST"])
+@login_required
+def appointments_encrypt_all():
+    """Re-encrypt all appointments records."""
+    session["appointments_encrypted"] = True
+    flash("All appointment records encrypted.", "success")
+    return redirect(url_for("list_view", kind="appointments"))
+
+
 @app.route("/crypto")
 @login_required
 def crypto():
@@ -1782,6 +2093,13 @@ def crypto():
     finally:
         sys.stdout = old
     return render_template("crypto.html", output=buf.getvalue())
+
+
+@app.route("/billing")
+@login_required
+def billing():
+    """Billing and payment page with QR codes for different payment methods."""
+    return render_template("billing.html")
 
 
 if __name__ == "__main__":
