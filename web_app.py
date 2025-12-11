@@ -16,7 +16,7 @@ except Exception:
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-from utils.storage import ensure_data_store, authenticate, list_records, save_records, can_edit, get_user_role, create_user, generate_mfa_code, verify_mfa_code, set_password, verify_pin, set_biometric_hash, verify_biometric_hash, encrypt_text, decrypt_text, send_mfa_code, send_sms_code, update_user, is_valid_username, is_valid_phone, is_valid_email, remember_account, list_accounts, remove_account, get_user, remove_saved_password, list_audit_events, list_audit_logins, archive_audit_logins, archive_audit_events, list_audit_login_archives, list_audit_event_archives, list_users, restore_audit_logins, restore_audit_events, add_mysql_record, update_mysql_record, delete_mysql_record, delete_user, ban_user, get_current_audit_session_info
+from utils.storage import ensure_data_store, authenticate, list_records, save_records, can_edit, get_user_role, create_user, generate_mfa_code, verify_mfa_code, set_password, verify_pin, set_biometric_hash, verify_biometric_hash, encrypt_text, decrypt_text, send_mfa_code, send_sms_code, update_user, is_valid_username, is_valid_phone, is_valid_email, is_valid_password, remember_account, list_accounts, remove_account, get_user, remove_saved_password, list_audit_events, list_audit_logins, archive_audit_logins, archive_audit_events, list_audit_login_archives, list_audit_event_archives, list_users, restore_audit_logins, restore_audit_events, add_mysql_record, update_mysql_record, delete_mysql_record, delete_user, ban_user, get_current_audit_session_info
 from company_profile.company_info import show_company_profile
 from risk_analysis.security_controls import show_security_controls
 from compliance.legal_ethics import show_compliance
@@ -113,9 +113,7 @@ def mfa():
         flash("Invalid MFA code", "error")
     return render_template("mfa.html")
 
-@app.route('/assets/<path:filename>')
-def assets(filename):
-    return send_from_directory(os.path.join(os.path.dirname(__file__), 'assets'), filename)
+# Duplicate route removed - using serve_assets instead
 # MySQL connection config via environment; connect lazily to avoid crash on bad creds
 # Set: MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DB, MYSQL_POOL_SIZE
 DB_CFG = {
@@ -219,6 +217,8 @@ def signup():
         role = role_map.get(role_raw, "visitor")
         if not username or not password:
             flash("Username and password are required", "error")
+        elif not is_valid_password(password):
+            flash("Password must be at least 8 characters with 1 number, 1 capital letter, and 1 symbol", "error")
         else:
             ok = create_user(
                 username,
@@ -363,6 +363,8 @@ def reset_password():
             return redirect(url_for("reset_code"))
         if not newp:
             flash("Enter new password", "error")
+        elif not is_valid_password(newp):
+            flash("Password must be at least 8 characters with 1 number, 1 capital letter, and 1 symbol", "error")
         else:
             set_password(ru, newp)
             
@@ -388,9 +390,23 @@ def reset_password():
 @app.route("/verify_pin", methods=["GET", "POST"]) 
 @login_required
 def verify_pin_route():
+    # Determine context for PIN verification
+    next_url = request.args.get("next", "")
+    context_message = ""
+    
+    # Check if this is for medical store access by a nurse
+    username = session.get("user")
+    user_role = (get_user(username) or {}).get("role", "").lower()
+    
+    if "medical_store" in next_url and user_role == "nurse":
+        context_message = "PIN verification required for Medical Store access"
+    elif any(module in next_url for module in ["patients_db", "appointments", "diagnoses", "prescriptions", "doctors"]):
+        context_message = "PIN verification required for clinical data access"
+    else:
+        context_message = "PIN verification required to continue"
+    
     if request.method == "POST":
         pin = request.form.get("pin", "").strip()
-        username = session.get("user")
         user = get_user(username)
         current_pin = (user or {}).get("pin", "")
         if not current_pin:
@@ -400,6 +416,19 @@ def verify_pin_route():
                     flash("PIN set successfully")
                     session["pin_ok"] = True
                     session["pin_ok_until"] = int(time.time()) + 300
+                    
+                    # Log PIN verification for medical store access by nurses
+                    if "medical_store" in next_url and user_role == "nurse":
+                        from utils.storage import add_audit_event
+                        import datetime
+                        add_audit_event({
+                            "kind": "authentication",
+                            "action": "pin_verified_medical_store",
+                            "username": username,
+                            "timestamp": datetime.datetime.now().isoformat(),
+                            "details": {"nurse_medical_store_access": True, "pin_set": True}
+                        })
+                    
                     next_url = request.args.get("next") or url_for("overview")
                     return redirect(next_url)
             flash("Enter a 6-digit PIN", "error")
@@ -407,10 +436,23 @@ def verify_pin_route():
             if verify_pin(username, pin):
                 session["pin_ok"] = True
                 session["pin_ok_until"] = int(time.time()) + 300
+                
+                # Log PIN verification for medical store access by nurses
+                if "medical_store" in next_url and user_role == "nurse":
+                    from utils.storage import add_audit_event
+                    import datetime
+                    add_audit_event({
+                        "kind": "authentication",
+                        "action": "pin_verified_medical_store",
+                        "username": username,
+                        "timestamp": datetime.datetime.now().isoformat(),
+                        "details": {"nurse_medical_store_access": True}
+                    })
+                
                 next_url = request.args.get("next") or url_for("overview")
                 return redirect(next_url)
             flash("Invalid PIN", "error")
-    return render_template("pin.html")
+    return render_template("pin.html", context_message=context_message)
 
 
 @app.route("/biometric", methods=["GET", "POST"]) 
@@ -556,11 +598,21 @@ def profile():
 
         phone = request.form.get("phone", "").strip()
         email = request.form.get("email", "").strip()
+        current_password = request.form.get("current_password", "")
+        new_password = request.form.get("new_password", "")
         file = request.files.get("avatar")
+        
+        # Validate inputs
         if phone and not is_valid_phone(phone):
             flash("Invalid phone number", "error")
         elif email and not is_valid_email(email):
             flash("Invalid email", "error")
+        elif new_password and not current_password:
+            flash("Current password is required to change password", "error")
+        elif new_password and not authenticate(username, current_password):
+            flash("Current password is incorrect", "error")
+        elif new_password and not is_valid_password(new_password):
+            flash("New password must be at least 8 characters with 1 number, 1 capital letter, and 1 symbol", "error")
         else:
             avatar_path = None
             if file and file.filename:
@@ -593,21 +645,52 @@ def profile():
                 except Exception:
                     cur_ver = 0
                 updates.update({"avatar": avatar_path, "avatar_ver": cur_ver + 1})
-            if update_user(username, updates):
-                # Log profile update
-                from utils.storage import add_audit_event
-                import datetime
-                add_audit_event({
-                    "kind": "user_management",
-                    "action": "profile_updated",
-                    "username": username,
-                    "timestamp": datetime.datetime.now().isoformat(),
-                    "details": {"fields_updated": list(updates.keys())}
-                })
-                
-                flash("Profile updated")
+            
+            # Handle password change
+            password_changed = False
+            if new_password:
+                if set_password(username, new_password):
+                    password_changed = True
+                    # Log password change
+                    from utils.storage import add_audit_event
+                    import datetime
+                    add_audit_event({
+                        "kind": "user_management",
+                        "action": "password_changed",
+                        "username": username,
+                        "timestamp": datetime.datetime.now().isoformat(),
+                        "details": {"method": "profile_update"}
+                    })
+                else:
+                    flash("Failed to update password", "error")
+                    return redirect(url_for("profile"))
+            
+            # Update other profile fields
+            if updates.get("phone") or updates.get("email") or avatar_path:
+                if update_user(username, updates):
+                    # Log profile update
+                    from utils.storage import add_audit_event
+                    import datetime
+                    add_audit_event({
+                        "kind": "user_management",
+                        "action": "profile_updated",
+                        "username": username,
+                        "timestamp": datetime.datetime.now().isoformat(),
+                        "details": {"fields_updated": list(updates.keys())}
+                    })
+                else:
+                    flash("Phone or email already in use", "error")
+                    return redirect(url_for("profile"))
+            
+            # Success message
+            if password_changed and (updates.get("phone") or updates.get("email") or avatar_path):
+                flash("Profile and password updated successfully")
+            elif password_changed:
+                flash("Password updated successfully")
+            elif updates.get("phone") or updates.get("email") or avatar_path:
+                flash("Profile updated successfully")
             else:
-                flash("Phone or email already in use", "error")
+                flash("No changes made")
         return redirect(url_for("profile"))
     return render_template("profile.html", user=user)
 
@@ -1051,13 +1134,13 @@ def can_edit_kind(username: str, kind: str) -> bool:
     if role == "admin":
         return kind in KIND_COLUMNS
 
-    # Doctor: manage medical records and clinical data, plus incidents
+    # Doctor: manage medical records and clinical data, plus incidents, doctors module, and appointments
     if role == "doctor":
-        return kind in {"patients_db", "diagnoses", "prescriptions", "incidents"}
+        return kind in {"patients_db", "diagnoses", "prescriptions", "incidents", "doctors", "appointments"}
 
-    # Nurse: basic patient info and incident reports
+    # Nurse: basic patient info, incident reports, and medical store (with PIN verification)
     if role == "nurse":
-        return kind in {"patients_db", "incidents"}
+        return kind in {"patients_db", "incidents", "medical_store"}
 
     # Pharmacist: prescriptions and inventory, plus incidents
     if role == "pharmacist":
@@ -1093,17 +1176,30 @@ def list_view(kind):
     if kind not in KIND_COLUMNS:
         return ("Unknown kind", 404)
     user = session.get("user")
+    edit_mode = request.args.get("edit") == "1"
     
     # Log data access for sensitive modules
     if kind in ["patients_db", "diagnoses", "prescriptions", "appointments", "medical_store"]:
         from utils.storage import add_audit_event
         import datetime
+        
+        # Special logging for nurse access to medical_store
+        user_role = (get_user(user) or {}).get("role", "").lower()
+        action_details = {"module": kind}
+        
+        if kind == "medical_store" and user_role == "nurse":
+            action_details.update({
+                "nurse_access": True,
+                "edit_mode": edit_mode,
+                "pin_verified": session.get("pin_ok", False)
+            })
+        
         add_audit_event({
             "kind": "data_access",
             "action": "view_records",
             "username": user,
             "timestamp": datetime.datetime.now().isoformat(),
-            "details": {"module": kind}
+            "details": action_details
         })
     
     # Check decryption status for each module
@@ -1128,11 +1224,19 @@ def list_view(kind):
             nurse_rows = [u for u in nurse_users if (u.get("role") or "").lower() == "nurse"]
     except Exception:
         nurse_rows = []
-    edit_mode = request.args.get("edit") == "1"
     user_can_edit = can_edit_kind(user, kind)
     
     # Require PIN/biometric verification when entering edit mode for clinical modules
+    # Also require PIN verification for nurses accessing medical_store in edit mode
+    user_role = (get_user(user) or {}).get("role", "").lower()
+    requires_pin_verification = False
+    
     if edit_mode and kind in ["patients_db", "appointments", "diagnoses", "prescriptions", "doctors"]:
+        requires_pin_verification = True
+    elif edit_mode and kind == "medical_store" and user_role == "nurse":
+        requires_pin_verification = True
+    
+    if requires_pin_verification:
         now = int(time.time())
         strong_ok = False
         if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
@@ -1174,14 +1278,23 @@ def add_view(kind):
         return redirect(url_for("list_view", kind=kind))
     
     # Require recent PIN OR biometric verification before modifying data
-    now = int(time.time())
-    strong_ok = False
-    if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
-        strong_ok = True
-    if session.get("bio_ok"):
-        strong_ok = True
-    if not strong_ok:
-        return redirect(url_for("verify_pin_route", next=url_for("add_view", kind=kind)))
+    # Special requirement for nurses accessing medical_store
+    user_role = (get_user(session.get("user")) or {}).get("role", "").lower()
+    requires_pin_verification = True
+    
+    # For nurses accessing medical_store, always require PIN verification
+    if kind == "medical_store" and user_role == "nurse":
+        requires_pin_verification = True
+    
+    if requires_pin_verification:
+        now = int(time.time())
+        strong_ok = False
+        if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
+            strong_ok = True
+        if session.get("bio_ok"):
+            strong_ok = True
+        if not strong_ok:
+            return redirect(url_for("verify_pin_route", next=url_for("add_view", kind=kind)))
     
     columns = KIND_COLUMNS[kind]
     
@@ -1289,25 +1402,33 @@ def edit_view(kind, index):
         return redirect(url_for("list_view", kind=kind))
     
     # Require recent PIN OR biometric verification before modifying data
-    now = int(time.time())
-    strong_ok = False
-    if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
-        strong_ok = True
-    if session.get("bio_ok"):
-        strong_ok = True
-    if not strong_ok:
-        return redirect(url_for("verify_pin_route", next=url_for("edit_view", kind=kind, index=index)))
+    # Special requirement for nurses accessing medical_store
+    user_role = (get_user(session.get("user")) or {}).get("role", "").lower()
+    requires_pin_verification = True
+    
+    # For nurses accessing medical_store, always require PIN verification
+    if kind == "medical_store" and user_role == "nurse":
+        requires_pin_verification = True
+    
+    if requires_pin_verification:
+        now = int(time.time())
+        strong_ok = False
+        if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
+            strong_ok = True
+        if session.get("bio_ok"):
+            strong_ok = True
+        if not strong_ok:
+            return redirect(url_for("verify_pin_route", next=url_for("edit_view", kind=kind, index=index)))
     
     columns = KIND_COLUMNS[kind]
     
     # Get records with proper decryption for display
-    decrypt_data = False
+    # For editing, we always need decrypted data to display properly
+    decrypt_data = True
     if kind == "patients_db":
-        decrypt_data = session.get("patients_db_decrypted", False)
-    elif kind in ["diagnoses", "prescriptions"]:
-        decrypt_data = not session.get(f"{kind}_encrypted", True)
-    elif kind == "appointments":
-        decrypt_data = not session.get("appointments_encrypted", True)
+        decrypt_data = True  # Always decrypt for editing
+    elif kind in ["diagnoses", "prescriptions", "appointments"]:
+        decrypt_data = True  # Always decrypt for editing
     
     items = list_records(kind, decrypt_patients_db=decrypt_data, decrypt_clinical=decrypt_data)
     if index < 0 or index >= len(items):
@@ -1434,6 +1555,28 @@ def edit_view(kind, index):
         try:
             updated = {col: request.form.get(col, "").strip() for col in columns}
             
+            # For clinical records with fixed patient fields, ensure patient name is preserved correctly
+            if kind in ["appointments", "diagnoses", "prescriptions"] and "Patient Name" in updated:
+                # Ensure patient name is not encrypted when passed to update function
+                patient_name = updated.get("Patient Name", "")
+                if patient_name and str(patient_name).startswith("gAAAA"):
+                    try:
+                        updated["Patient Name"] = decrypt_text(str(patient_name))
+                        logger.info(f"Decrypted patient name for {kind} update: {updated['Patient Name']}")
+                    except Exception as e:
+                        logger.warning(f"Failed to decrypt patient name: {e}")
+                        pass  # Keep as is if decryption fails
+                else:
+                    logger.info(f"Patient name for {kind} update (already decrypted): {patient_name}")
+                
+                # Validate patient name format (should have first and last name)
+                if patient_name and len(patient_name.split()) < 2:
+                    flash(f"Invalid patient name format. Please ensure both first and last names are provided.", "error")
+                    return render_template("edit.html", kind=kind, columns=columns, values=updated,
+                                         index=index, decrypted=False, doctor_options=doctor_options,
+                                         patient_options=patient_options, patient_first_options=patient_first_options,
+                                         patient_last_options=patient_last_options)
+            
             # Validate required fields (skip ID fields as they're auto-generated)
             id_fields = ["ID", "Patient ID", "Appointment ID", "Diagnosis ID", "Prescription ID", "Item ID"]
             missing_fields = [col for col in columns if not updated.get(col) and col not in id_fields]
@@ -1477,9 +1620,25 @@ def edit_view(kind, index):
                     flash("Invalid record identifier.", "error")
                     return redirect(url_for("list_view", kind=kind))
                 
+                # Log the update attempt for debugging
+                logger.info(f"Attempting to update {kind} record ID {db_id} with data: {updated}")
+                
+                # Special logging for appointment status updates
+                if kind == "appointments" and "Status" in updated:
+                    status_value = updated['Status']
+                    valid_statuses = ['Scheduled', 'Completed', 'Canceled']
+                    if status_value not in valid_statuses:
+                        logger.warning(f"Invalid appointment status: {status_value}. Valid options: {valid_statuses}")
+                        flash(f"Invalid status. Please select from: {', '.join(valid_statuses)}", "error")
+                        return render_template("edit.html", kind=kind, columns=columns, values=updated,
+                                             index=index, decrypted=False, doctor_options=doctor_options,
+                                             patient_options=patient_options, patient_first_options=patient_first_options,
+                                             patient_last_options=patient_last_options)
+                    logger.info(f"Updating appointment status to: {status_value}")
+                
                 ok = update_mysql_record(kind, db_id, updated, username=session.get("user", "system"))
                 if not ok:
-                    logger.error(f"Failed to update {kind} record: {updated}")
+                    logger.error(f"Failed to update {kind} record ID {db_id}: {updated}")
                     if kind in ["appointments", "diagnoses", "prescriptions"]:
                         flash(f"Failed to update {kind[:-1]}. Please ensure the patient and doctor exist in the system.", "error")
                     else:
@@ -1489,6 +1648,7 @@ def edit_view(kind, index):
                                          patient_options=patient_options, patient_first_options=patient_first_options,
                                          patient_last_options=patient_last_options)
                 else:
+                    logger.info(f"Successfully updated {kind} record ID {db_id}")
                     flash("Record updated successfully.", "success")
                 return redirect(url_for("list_view", kind=kind))
             
@@ -1523,14 +1683,23 @@ def delete_view(kind, index):
         return redirect(url_for("list_view", kind=kind))
     
     # Require recent PIN OR biometric verification before modifying data
-    now = int(time.time())
-    strong_ok = False
-    if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
-        strong_ok = True
-    if session.get("bio_ok"):
-        strong_ok = True
-    if not strong_ok:
-        return redirect(url_for("verify_pin_route", next=url_for("list_view", kind=kind)))
+    # Special requirement for nurses accessing medical_store
+    user_role = (get_user(session.get("user")) or {}).get("role", "").lower()
+    requires_pin_verification = True
+    
+    # For nurses accessing medical_store, always require PIN verification
+    if kind == "medical_store" and user_role == "nurse":
+        requires_pin_verification = True
+    
+    if requires_pin_verification:
+        now = int(time.time())
+        strong_ok = False
+        if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
+            strong_ok = True
+        if session.get("bio_ok"):
+            strong_ok = True
+        if not strong_ok:
+            return redirect(url_for("verify_pin_route", next=url_for("list_view", kind=kind)))
     
     items = list_records(kind)
     if 0 <= index < len(items):
