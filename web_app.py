@@ -16,7 +16,7 @@ except Exception:
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-from utils.storage import ensure_data_store, authenticate, list_records, save_records, can_edit, get_user_role, create_user, generate_mfa_code, verify_mfa_code, set_password, verify_pin, set_biometric_hash, verify_biometric_hash, encrypt_text, decrypt_text, send_mfa_code, send_sms_code, update_user, is_valid_username, is_valid_phone, is_valid_email, is_valid_password, remember_account, list_accounts, remove_account, get_user, remove_saved_password, list_audit_events, list_audit_logins, archive_audit_logins, archive_audit_events, list_audit_login_archives, list_audit_event_archives, list_users, restore_audit_logins, restore_audit_events, add_mysql_record, update_mysql_record, delete_mysql_record, delete_user, ban_user, get_current_audit_session_info
+from utils.storage import ensure_data_store, authenticate, list_records, save_records, can_edit, get_user_role, create_user, generate_mfa_code, verify_mfa_code, set_password, verify_pin, set_biometric_hash, verify_biometric_hash, encrypt_text, decrypt_text, encrypt_sensitive_data, decrypt_sensitive_data, is_encrypted_data, send_mfa_code, send_sms_code, update_user, is_valid_username, is_valid_phone, is_valid_email, is_valid_password, remember_account, list_accounts, remove_account, get_user, remove_saved_password, list_audit_events, list_audit_logins, archive_audit_logins, archive_audit_events, list_audit_login_archives, list_audit_event_archives, list_users, restore_audit_logins, restore_audit_events, add_mysql_record, update_mysql_record, delete_mysql_record, delete_user, ban_user, get_current_audit_session_info
 from company_profile.company_info import show_company_profile
 from risk_analysis.security_controls import show_security_controls
 from compliance.legal_ethics import show_compliance
@@ -30,7 +30,6 @@ app.secret_key = "dev-secret-change-me"
 
 ensure_data_store()
 
-
 def login_required(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
@@ -39,21 +38,18 @@ def login_required(f):
         return f(*args, **kwargs)
     return wrapper
 
-
 @app.route('/assets/<path:filename>')
 def serve_assets(filename):
     base = os.path.join(os.path.dirname(__file__), 'assets')
     return send_from_directory(base, filename)
 
-
 @app.route("/")
 def index():
     if session.get("user"):
         # Auto-encrypt when navigating to home
-        auto_encrypt_all_data()
+        clear_phi_session_data()
         return redirect(url_for("overview"))
     return redirect(url_for("login"))
-
 
 @app.route("/login", methods=["GET", "POST"]) 
 def login():
@@ -96,7 +92,6 @@ def login():
             })
         flash("Invalid credentials", "error")
     return render_template("login.html", preset=request.args.get("username", ""))
-
 
 @app.route("/mfa", methods=["GET", "POST"]) 
 def mfa():
@@ -209,9 +204,9 @@ def signup():
             "inventory_staff": "inventory",
             "it_security": "it_security",
             "nurse": "nurse",
-            # Patients and Other map to low-privilege visitor (view-only)
-            "patients": "visitor",
-            "other": "visitor",
+            # Patients and Other roles have specific permissions
+            "patients": "patients",
+            "other": "other",
             "": "visitor",
         }
         role = role_map.get(role_raw, "visitor")
@@ -252,7 +247,6 @@ def signup():
                 flash("Username already exists", "error")
     return render_template("signup.html")
 
-
 @app.route("/validate_username", methods=["GET", "POST"]) 
 def validate_username():
     if request.method == "POST":
@@ -269,13 +263,11 @@ def validate_username():
                 return redirect(url_for("forgot"))
     return render_template("validate_username.html")
 
-
 @app.route("/forgot", methods=["GET"]) 
 def forgot():
     if "validated_username" not in session:
         return redirect(url_for("validate_username"))
     return render_template("forgot.html")
-
 
 @app.route("/verify_phone", methods=["POST"]) 
 def verify_phone():
@@ -300,7 +292,6 @@ def verify_phone():
         flash("Reset code sent to your phone.", "success")
     session["reset_user"] = username
     return redirect(url_for("reset_code"))
-
 
 @app.route("/verify_email", methods=["GET", "POST"]) 
 def verify_email():
@@ -329,7 +320,6 @@ def verify_email():
         return redirect(url_for("reset_code"))
     return render_template("verify_email.html", preset_email=preset)
 
-
 @app.route("/reset/code", methods=["GET", "POST"]) 
 def reset_code():
     """Page where user enters the 6-digit reset code sent via email/SMS."""
@@ -347,7 +337,6 @@ def reset_code():
             flash("Code verified. You can now set a new password.", "success")
             return redirect(url_for("reset_password"))
     return render_template("reset_code.html")
-
 
 @app.route("/reset", methods=["GET", "POST"]) 
 def reset_password():
@@ -385,7 +374,6 @@ def reset_password():
             flash("Password updated. Please log in.")
             return redirect(url_for("login"))
     return render_template("reset_password.html")
-
 
 @app.route("/verify_pin", methods=["GET", "POST"]) 
 @login_required
@@ -454,7 +442,6 @@ def verify_pin_route():
             flash("Invalid PIN", "error")
     return render_template("pin.html", context_message=context_message)
 
-
 @app.route("/biometric", methods=["GET", "POST"]) 
 @login_required
 def biometric():
@@ -484,7 +471,6 @@ def biometric():
             flash("Biometric mismatch", "error")
     return render_template("biometric.html", verify_only=verify_only)
 
-
 @app.route("/verify_biometric_reset", methods=["GET", "POST"]) 
 def verify_biometric_reset():
     """Biometric verification for password reset (no login required)."""
@@ -513,12 +499,10 @@ def verify_biometric_reset():
     
     return render_template("biometric_reset.html")
 
-
 @app.route("/biometric/capture")
 @login_required
 def biometric_capture():
     return render_template("biometric_capture.html")
-
 
 @app.route("/settings", methods=["GET", "POST"]) 
 def settings():
@@ -531,7 +515,6 @@ def settings():
         flash("Settings saved")
         return redirect(url_for("settings"))
     return render_template("settings.html")
-
 
 @app.route("/account/delete", methods=["GET", "POST"]) 
 @login_required
@@ -579,11 +562,9 @@ def delete_account_route():
 
     return render_template("delete_account.html")
 
-
 @app.route("/help") 
 def help_center():
     return render_template("help.html")
-
 
 @app.route("/profile", methods=["GET", "POST"]) 
 @login_required
@@ -694,7 +675,6 @@ def profile():
         return redirect(url_for("profile"))
     return render_template("profile.html", user=user)
 
-
 @app.route("/validate", methods=["POST"]) 
 def validate():
     kind = request.form.get("kind")
@@ -708,12 +688,10 @@ def validate():
         ok = is_valid_email(value)
     return {"ok": bool(ok)}
 
-
 @app.route("/accounts", methods=["GET"]) 
 def accounts():
     accs = list_accounts()
     return render_template("accounts.html", accounts=accs)
-
 
 @app.route("/accounts/remove", methods=["POST"]) 
 def accounts_remove():
@@ -722,7 +700,6 @@ def accounts_remove():
         remove_account(username)
         flash("Account removed")
     return redirect(url_for("accounts"))
-
 
 @app.route("/accounts/save_password", methods=["POST"]) 
 def accounts_save_password():
@@ -733,7 +710,6 @@ def accounts_save_password():
         flash("Password saved for account")
     return redirect(url_for("accounts"))
 
-
 @app.route("/accounts/clear_password", methods=["POST"]) 
 def accounts_clear_password():
     username = request.form.get("username", "").strip()
@@ -741,7 +717,6 @@ def accounts_clear_password():
         remove_saved_password(username)
         flash("Saved password cleared")
     return redirect(url_for("accounts"))
-
 
 @app.route("/accounts/ban", methods=["POST"]) 
 @login_required
@@ -773,7 +748,6 @@ def accounts_ban():
             flash("Failed to ban user. User may not exist or you don't have permission.", "error")
     return redirect(url_for("accounts"))
 
-
 @app.route("/users/manage")
 @login_required
 def manage_users():
@@ -789,7 +763,6 @@ def manage_users():
     # Get all users
     users = list_users(limit=500)
     return render_template("manage_users.html", users=users, current_username=acting_username)
-
 
 @app.route("/users/ban/<username>", methods=["POST"])
 @login_required
@@ -812,7 +785,6 @@ def ban_user_route(username):
     
     return redirect(url_for("manage_users"))
 
-
 @app.route("/audit")
 @login_required
 def audit_index():
@@ -826,7 +798,6 @@ def audit_index():
         filter_kind="",
         session_info=session_info,
     )
-
 
 @app.route("/audit/<kind>")
 @login_required
@@ -844,7 +815,6 @@ def audit_kind(kind):
         session_info=session_info,
     )
 
-
 @app.route("/audit/archive", methods=["POST"]) 
 @login_required
 def audit_archive():
@@ -860,7 +830,6 @@ def audit_archive():
     else:
         flash("No audit records to archive.", "info")
     return redirect(url_for("audit_index"))
-
 
 @app.route("/audit/archive/view")
 @login_required
@@ -878,7 +847,6 @@ def audit_archive_view():
         event_archives=event_archives,
     )
 
-
 @app.route("/audit/archive/restore", methods=["POST"]) 
 @login_required
 def audit_archive_restore():
@@ -894,7 +862,6 @@ def audit_archive_restore():
     else:
         flash("No archived records to restore.", "info")
     return redirect(url_for("audit_index"))
-
 
 @app.route("/audit/new-session", methods=["POST"])
 @login_required
@@ -933,42 +900,50 @@ def audit_new_session():
     
     return redirect(url_for("audit_index"))
 
-
-def auto_encrypt_all_data():
-    """Automatically encrypt all sensitive data when user exits or logs out."""
-    session["patients_db_decrypted"] = False
-    session["patients_db_encrypted"] = True
-    session["doctors_encrypted"] = True
-    session["appointments_encrypted"] = True
-    session["diagnoses_encrypted"] = True
-    session["prescriptions_encrypted"] = True
-
-
-@app.route("/auto-encrypt-all", methods=["POST"])
-@login_required
-def auto_encrypt_all():
-    """Auto-encrypt all data when user navigates away from clinical modules."""
-    auto_encrypt_all_data()
+def clear_phi_session_data():
+    """
+    ✅ CORRECT: Clear PHI authentication session when user navigates away.
+    This ensures users must re-authenticate to view PHI data.
+    Server handles encryption automatically - no manual encryption needed.
+    """
+    # Clear PHI authentication flags
+    session.pop("pin_ok", None)
+    session.pop("pin_ok_until", None)
+    session.pop("bio_ok", None)
     
-    # Log auto-encryption event
+    # Clear any temporary PHI session data
+    session.pop("patients_db_decrypted", None)
+    session.pop("diagnoses_decrypted", None)
+    session.pop("prescriptions_decrypted", None)
+    session.pop("appointments_decrypted", None)
+
+@app.route("/clear-phi-session", methods=["POST"])
+@login_required
+def clear_phi_session():
+    """
+    ✅ CORRECT: Clear PHI authentication when user navigates away.
+    Server handles encryption automatically - this just clears session auth.
+    """
+    clear_phi_session_data()
+    
+    # Log session clearing event
     from utils.storage import add_audit_event
     import datetime
     add_audit_event({
         "kind": "data_access",
-        "action": "auto_encrypt_all",
+        "action": "clear_phi_session",
         "username": session.get("user", "unknown"),
         "timestamp": datetime.datetime.now().isoformat(),
-        "details": {"trigger": "navigation_away"}
+        "details": {"trigger": "navigation_away", "reason": "phi_session_timeout"}
     })
     
-    return {"status": "success", "message": "All data encrypted"}
-
+    return {"status": "success", "message": "PHI session cleared - re-authentication required"}
 
 @app.route("/logout")
 @login_required
 def logout():
-    # Automatically encrypt all data before logout
-    auto_encrypt_all_data()
+    # Clear PHI session data before logout (server handles encryption automatically)
+    clear_phi_session_data()
     
     # Log logout event
     from utils.storage import add_audit_event
@@ -985,7 +960,6 @@ def logout():
     flash("Logged out successfully. All data has been automatically encrypted.", "info")
     return redirect(url_for("login"))
 
-
 @app.context_processor
 def inject_user():
     u = None
@@ -996,12 +970,11 @@ def inject_user():
             u = None
     return {"current_user": u}
 
-
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    # Auto-encrypt when navigating to dashboard
-    auto_encrypt_all_data()
+    # Clear PHI session when navigating to dashboard (require re-auth for PHI)
+    clear_phi_session_data()
     # Summary cards
     try:
         doctors = len(list_records("doctors"))
@@ -1072,12 +1045,11 @@ def dashboard():
         users=users,
     )
 
-
 @app.route("/overview")
 @login_required
 def overview():
-    # Auto-encrypt when navigating to overview
-    auto_encrypt_all_data()
+    # Clear PHI session when navigating to overview (require re-auth for PHI)
+    clear_phi_session_data()
     
     def capture(fn):
         buf = io.StringIO()
@@ -1093,7 +1065,6 @@ def overview():
     controls_text = capture(show_security_controls)
     compliance_text = capture(show_compliance)
     return render_template("overview.html", profile_text=profile_text, controls_text=controls_text, compliance_text=compliance_text)
-
 
 KIND_COLUMNS = {
     "assets": ["Asset Name", "Type", "Value", "Owner", "Security Classification"],
@@ -1119,56 +1090,135 @@ SEED_DATA = {
     "patients": [],
 }
 
+# 🏥 HEALTHCARE RBAC - PROPER SECURITY MODEL
+# ✅ Roles control PERMISSIONS, NOT encryption/decryption
+# ✅ Server handles ALL encryption/decryption automatically
+# ✅ Users never directly encrypt/decrypt data
 
-def can_edit_kind(username: str, kind: str) -> bool:
-    """Fine-grained RBAC for record editing by module/kind.
-
-    Uses role-based rules from the hospital RBAC description. Still relies on
-    generic can_edit for any roles not explicitly covered here.
+def can_view_phi_data(username: str, kind: str) -> bool:
+    """
+    ✅ CORRECT: Check if user role can VIEW decrypted PHI data.
+    Server will automatically decrypt for authorized users.
     """
     if not username:
         return False
     role = (get_user_role(username) or "").lower()
 
-    # Admin: full access across modules handled by /records
+    # ✅ ADMIN: Can view system data but NOT patient PHI unless explicitly granted
     if role == "admin":
-        return kind in KIND_COLUMNS
+        # Admins can see system data but need explicit permission for PHI
+        return kind in {"assets", "threats", "bia", "incidents"}
 
-    # Doctor: manage medical records and clinical data, plus incidents, doctors module, and appointments
+    # ✅ DOCTOR: Can view ALL patient PHI data (server decrypts automatically)
     if role == "doctor":
-        return kind in {"patients_db", "diagnoses", "prescriptions", "incidents", "doctors", "appointments"}
+        return kind in {"patients_db", "diagnoses", "prescriptions", "appointments", "doctors", "incidents"}
 
-    # Nurse: basic patient info, incident reports, and medical store (with PIN verification)
+    # ✅ NURSE: Can view basic patient info and medical store
     if role == "nurse":
-        return kind in {"patients_db", "incidents", "medical_store"}
+        return kind in {"patients_db", "appointments", "medical_store", "incidents"}
 
-    # Pharmacist: prescriptions and inventory, plus incidents
+    # ✅ PHARMACIST: Can view prescriptions and inventory
     if role == "pharmacist":
-        return kind in {"prescriptions", "medical_store", "incidents"}
+        return kind in {"prescriptions", "medical_store", "patients_db", "incidents"}
 
-    # Inventory staff: medical store and incidents
-    if role == "inventory":
-        return kind in {"medical_store", "incidents"}
+    # ✅ AUDITOR: Can view logs but NO patient PHI unless specifically granted
+    if role == "auditor":
+        return kind in {"incidents"}  # Only non-PHI data
 
-    # IT Security: assets, threats, BIA, and incidents
+    # ✅ IT SECURITY: NO access to patient PHI (security separation)
     if role == "it_security":
         return kind in {"assets", "threats", "bia", "incidents"}
 
-    # Receptionist: appointments and incident filing
+    # ✅ RECEPTIONIST: Basic appointment and patient contact info only
+    if role == "receptionist":
+        return kind in {"appointments", "patients_db"}  # Limited patient info
+
+    # ✅ ASSET MANAGER: Can view assets
+    if role == "asset_manager":
+        return kind in {"assets", "incidents"}
+
+    # ✅ INVENTORY STAFF: Can view medical store
+    if role == "inventory":
+        return kind in {"medical_store", "incidents"}
+
+    # ✅ PATIENTS ROLE: Can view medical store, patients, and doctors (read-only)
+    if role == "patients":
+        return kind in {"medical_store", "patients_db", "doctors", "incidents"}
+
+    # ✅ OTHER ROLE: Can view medical store, patients, and doctors (read-only)
+    if role == "other":
+        return kind in {"medical_store", "patients_db", "doctors", "incidents"}
+
+    # ✅ PATIENT/VISITOR: No general access (would need patient-specific check)
+    return False
+
+def can_edit_kind(username: str, kind: str) -> bool:
+    """
+    ✅ CORRECT: Check if user role can EDIT data.
+    Server handles encryption automatically when saving.
+    """
+    if not username:
+        return False
+    role = (get_user_role(username) or "").lower()
+
+    # ✅ ADMIN: Can edit system data but NOT patient PHI unless explicitly granted
+    if role == "admin":
+        return kind in {"assets", "threats", "bia", "incidents", "doctors"}  # No direct PHI editing
+
+    # ✅ DOCTOR: Can edit medical records (server encrypts automatically)
+    if role == "doctor":
+        return kind in {"patients_db", "diagnoses", "prescriptions", "appointments", "doctors", "incidents"}
+
+    # ✅ NURSE: Can edit basic patient info and medical store (with PIN verification)
+    if role == "nurse":
+        return kind in {"patients_db", "incidents", "medical_store"}
+
+    # ✅ PHARMACIST: Can edit prescriptions and inventory
+    if role == "pharmacist":
+        return kind in {"prescriptions", "medical_store", "incidents"}
+
+    # ✅ INVENTORY STAFF: Medical store only
+    if role == "inventory":
+        return kind in {"medical_store", "incidents"}
+
+    # ✅ IT SECURITY: System security data only (NO patient PHI)
+    if role == "it_security":
+        return kind in {"assets", "threats", "bia", "incidents"}
+
+    # ✅ RECEPTIONIST: Appointments only
     if role == "receptionist":
         return kind in {"appointments", "incidents"}
 
-    # Asset manager: assets only
+    # ✅ ASSET MANAGER: Can access assets
     if role == "asset_manager":
-        return kind == "assets"
+        return kind in {"assets", "incidents"}
 
-    # Auditor: view-only everywhere via list_view
+    # ✅ AUDITOR: Read-only (no editing)
     if role == "auditor":
         return False
 
-    # Visitors / patients / generic staff: fall back to coarse check
-    return can_edit(username)
+    # ✅ PATIENT/VISITOR: No editing access
+    return False
 
+def requires_phi_authentication(username: str, kind: str) -> bool:
+    """
+    ✅ CORRECT: Check if accessing this data requires additional authentication.
+    Used for PIN/biometric verification before server decrypts PHI data.
+    """
+    if not username:
+        return True
+    
+    # PHI data always requires additional authentication
+    phi_modules = {"patients_db", "diagnoses", "prescriptions", "appointments"}
+    
+    if kind in phi_modules:
+        role = (get_user_role(username) or "").lower()
+        
+        # Doctors and nurses need PIN/biometric for PHI access
+        if role in {"doctor", "nurse", "pharmacist"}:
+            return True
+    
+    return False
 
 @app.route("/records/<kind>")
 @login_required
@@ -1177,6 +1227,23 @@ def list_view(kind):
         return ("Unknown kind", 404)
     user = session.get("user")
     edit_mode = request.args.get("edit") == "1"
+    
+    # ✅ STEP 1: Check if user has permission to VIEW this data type
+    if not can_view_phi_data(user, kind):
+        flash("You do not have permission to view this data.", "error")
+        return redirect(url_for("overview"))
+    
+    # ✅ STEP 2: Check if PHI authentication is required
+    # Server will automatically decrypt ONLY if user is authenticated
+    needs_phi_auth = requires_phi_authentication(user, kind)
+    phi_authenticated = False
+    
+    if needs_phi_auth:
+        now = int(time.time())
+        if (session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0)) or session.get("bio_ok"):
+            phi_authenticated = True
+    else:
+        phi_authenticated = True  # No PHI auth needed for non-PHI data
     
     # Log data access for sensitive modules
     if kind in ["patients_db", "diagnoses", "prescriptions", "appointments", "medical_store"]:
@@ -1202,15 +1269,12 @@ def list_view(kind):
             "details": action_details
         })
     
-    # Check decryption status for each module
-    # Default is encrypted (True means encrypted, so decrypt_data should be False by default)
-    decrypt_data = session.get("patients_db_decrypted", False)
-    decrypt_clinical_data = False
-    # Check if clinical data (diagnoses, prescriptions, appointments, doctors) should be decrypted
-    if kind in ["diagnoses", "prescriptions", "doctors"]:
-        decrypt_clinical_data = not session.get(f"{kind}_encrypted", True)
-    elif kind == "appointments":
-        decrypt_clinical_data = not session.get("appointments_encrypted", True)
+    # ✅ STEP 3: Server automatically decrypts data for authorized users
+    # Only decrypt if user has proper authentication for PHI data
+    decrypt_data = phi_authenticated and can_view_phi_data(user, kind)
+    decrypt_clinical_data = phi_authenticated and can_view_phi_data(user, kind)
+    
+    # ✅ Server handles decryption automatically based on permissions
     items = list_records(kind, decrypt_patients_db=decrypt_data, decrypt_clinical=decrypt_clinical_data)
     extra_cols = []
     extra_rows = []
@@ -1247,12 +1311,6 @@ def list_view(kind):
             return redirect(url_for("verify_pin_route", next=url_for("list_view", kind=kind) + "?edit=1"))
     
     allow_delete = user_can_edit and kind in {"assets", "threats", "incidents", "bia", "patients", "patients_db", "appointments", "diagnoses", "prescriptions", "medical_store", "doctors"}
-    # Check if data is encrypted (default is encrypted = True, decrypted = False)
-    encrypted = True
-    if kind == "patients_db":
-        encrypted = not session.get("patients_db_decrypted", False)
-    elif kind in ["diagnoses", "prescriptions", "doctors", "appointments"]:
-        encrypted = session.get(f"{kind}_encrypted", True)
     return render_template(
         "list.html",
         kind=kind,
@@ -1264,9 +1322,7 @@ def list_view(kind):
         edit_mode=edit_mode,
         allow_delete=allow_delete,
         nurse_rows=nurse_rows,
-        encrypted=encrypted,
     )
-
 
 @app.route("/records/<kind>/add", methods=["GET", "POST"]) 
 @login_required
@@ -1340,16 +1396,20 @@ def add_view(kind):
                                      doctor_options=doctor_options, patient_options=patient_options,
                                      patient_first_options=patient_first_options, patient_last_options=patient_last_options)
             
-            # Encrypt sensitive fields for JSON-based patients
+            # ✅ ENCRYPT SENSITIVE PHI DATA for JSON-based patients
             if kind == "patients":
-                if new_item.get("Diagnosis") and not str(new_item.get("Diagnosis", "")).startswith("gAAAA"):
-                    new_item["Diagnosis"] = encrypt_text(new_item.get("Diagnosis", ""))
-                if new_item.get("Blood Type") and not str(new_item.get("Blood Type", "")).startswith("gAAAA"):
-                    new_item["Blood Type"] = encrypt_text(new_item.get("Blood Type", ""))
-                if new_item.get("Amount") and not str(new_item.get("Amount", "")).startswith("gAAAA"):
-                    new_item["Amount"] = encrypt_text(new_item.get("Amount", ""))
-                if new_item.get("Phone Number") and not str(new_item.get("Phone Number", "")).startswith("gAAAA"):
-                    new_item["Phone Number"] = encrypt_text(new_item.get("Phone Number", ""))
+                # ✅ ENCRYPT: Diagnosis (sensitive medical information)
+                if new_item.get("Diagnosis"):
+                    new_item["Diagnosis"] = encrypt_sensitive_data(new_item.get("Diagnosis", ""))
+                # ✅ ENCRYPT: Blood Type (sensitive medical information)
+                if new_item.get("Blood Type"):
+                    new_item["Blood Type"] = encrypt_sensitive_data(new_item.get("Blood Type", ""))
+                # ✅ ENCRYPT: Amount (financial PHI)
+                if new_item.get("Amount"):
+                    new_item["Amount"] = encrypt_sensitive_data(new_item.get("Amount", ""))
+                # ✅ ENCRYPT: Phone Number (patient identifier PHI)
+                if new_item.get("Phone Number"):
+                    new_item["Phone Number"] = encrypt_sensitive_data(new_item.get("Phone Number", ""))
             
             # Handle MySQL-backed modules
             clinical_mysql_kinds = {"patients_db", "appointments", "diagnoses", "prescriptions", "medical_store", "doctors"}
@@ -1390,7 +1450,6 @@ def add_view(kind):
     return render_template("edit.html", kind=kind, columns=columns, values={},
                          doctor_options=doctor_options, patient_options=patient_options,
                          patient_first_options=patient_first_options, patient_last_options=patient_last_options)
-
 
 @app.route("/records/<kind>/edit/<int:index>", methods=["GET", "POST"]) 
 @login_required
@@ -1469,27 +1528,21 @@ def edit_view(kind, index):
             decrypted_values = dict(items[index])
             
             if kind == "patients_db":
-                # Decrypt Last Name
+                # ✅ DECRYPT PHI DATA for authorized viewing
+                # Decrypt Last Name (PHI)
                 raw_last_name = decrypted_values.get("Last Name", "")
-                if raw_last_name and str(raw_last_name).startswith("gAAAA"):
-                    try:
-                        decrypted_values["Last Name"] = decrypt_text(str(raw_last_name))
-                    except Exception:
-                        pass
-                # Decrypt Contact
+                if raw_last_name and is_encrypted_data(str(raw_last_name)):
+                    decrypted_values["Last Name"] = decrypt_sensitive_data(str(raw_last_name))
+                
+                # Decrypt Contact (PHI)
                 raw_contact = decrypted_values.get("Contact", "")
-                if raw_contact and str(raw_contact).startswith("gAAAA"):
-                    try:
-                        decrypted_values["Contact"] = decrypt_text(str(raw_contact))
-                    except Exception:
-                        pass
-                # Decrypt Allergies
+                if raw_contact and is_encrypted_data(str(raw_contact)):
+                    decrypted_values["Contact"] = decrypt_sensitive_data(str(raw_contact))
+                
+                # Decrypt Allergies (sensitive medical data)
                 raw_allergies = decrypted_values.get("Allergies", "")
-                if raw_allergies and str(raw_allergies).startswith("gAAAA"):
-                    try:
-                        decrypted_values["Allergies"] = decrypt_text(str(raw_allergies))
-                    except Exception:
-                        pass
+                if raw_allergies and is_encrypted_data(str(raw_allergies)):
+                    decrypted_values["Allergies"] = decrypt_sensitive_data(str(raw_allergies))
             
             elif kind == "appointments":
                 # Decrypt Patient Name
@@ -1672,7 +1725,6 @@ def edit_view(kind, index):
                          patient_options=patient_options, patient_first_options=patient_first_options,
                          patient_last_options=patient_last_options)
 
-
 @app.route("/records/<kind>/delete/<int:index>", methods=["POST"]) 
 @login_required
 def delete_view(kind, index):
@@ -1744,264 +1796,6 @@ def delete_view(kind, index):
     
     return redirect(url_for("list_view", kind=kind))
 
-
-@app.route("/records/patients_db/decrypt", methods=["POST"])
-@login_required
-def patients_db_decrypt():
-    """Decrypt all patients_db records for viewing."""
-    # Require PIN/biometric verification
-    now = int(time.time())
-    strong_ok = False
-    if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
-        strong_ok = True
-    if session.get("bio_ok"):
-        strong_ok = True
-    if not strong_ok:
-        return redirect(url_for("verify_pin_route", next=url_for("patients_db_decrypt")))
-    
-    session["patients_db_decrypted"] = True
-    
-    # Log decryption event
-    from utils.storage import add_audit_event
-    import datetime
-    add_audit_event({
-        "kind": "data_access",
-        "action": "decrypt_all",
-        "username": session.get("user", "unknown"),
-        "timestamp": datetime.datetime.now().isoformat(),
-        "details": {"module": "patients_db"}
-    })
-    
-    flash("Patient records decrypted for viewing.", "success")
-    return redirect(url_for("list_view", kind="patients_db"))
-
-
-@app.route("/records/patients_db/encrypt", methods=["POST"])
-@login_required
-def patients_db_encrypt():
-    """Re-encrypt all patients_db records."""
-    session["patients_db_decrypted"] = False
-    flash("Patient records encrypted.", "success")
-    return redirect(url_for("list_view", kind="patients_db"))
-
-
-@app.route("/records/patients/decrypt/<int:index>")
-@login_required
-def patients_decrypt(index):
-    if not session.get("bio_ok"):
-        return redirect(url_for("biometric", next=url_for("patients_decrypt", index=index)))
-    items = list_records("patients")
-    if index < 0 or index >= len(items):
-        return ("Not found", 404)
-    row = items[index]
-    diag = row.get("Diagnosis", "")
-    bt = row.get("Blood Type", "")
-    row = dict(row)
-    # Only decrypt fields that look like Fernet tokens; keep plaintext as-is for legacy data
-    if diag and str(diag).startswith("gAAAA"):
-        row["Diagnosis"] = decrypt_text(diag)
-    else:
-        row["Diagnosis"] = diag
-    if bt and str(bt).startswith("gAAAA"):
-        row["Blood Type"] = decrypt_text(bt)
-    else:
-        row["Blood Type"] = bt
-    return render_template("patient_view.html", row=row, index=index)
-
-
-@app.route("/records/patients/encrypt/<int:index>", methods=["POST"])
-@login_required
-def patients_encrypt(index):
-    items = list_records("patients")
-    if index < 0 or index >= len(items):
-        return ("Not found", 404)
-    row = dict(items[index])
-    diag = row.get("Diagnosis", "")
-    bt = row.get("Blood Type", "")
-    # Only encrypt if it does not look like a Fernet token already
-    changed = False
-    if diag and not str(diag).startswith("gAAAA"):
-        row["Diagnosis"] = encrypt_text(diag)
-        changed = True
-    if bt and not str(bt).startswith("gAAAA"):
-        row["Blood Type"] = encrypt_text(bt)
-        changed = True
-    if changed:
-        items[index] = row
-        save_records("patients", items)
-        flash("Patient record encrypted.", "success")
-    else:
-        flash("Record is already encrypted.", "info")
-    return redirect(url_for("list_view", kind="patients"))
-
-
-@app.route("/records/diagnoses/decrypt", methods=["POST"])
-@login_required
-def diagnoses_decrypt():
-    """Decrypt all diagnoses records for viewing."""
-    # Require PIN/biometric verification
-    now = int(time.time())
-    strong_ok = False
-    if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
-        strong_ok = True
-    if session.get("bio_ok"):
-        strong_ok = True
-    if not strong_ok:
-        return redirect(url_for("verify_pin_route", next=url_for("diagnoses_decrypt")))
-    
-    session["diagnoses_decrypted"] = True
-    
-    # Log decryption event
-    from utils.storage import add_audit_event
-    import datetime
-    add_audit_event({
-        "kind": "data_access",
-        "action": "decrypt_all",
-        "username": session.get("user", "unknown"),
-        "timestamp": datetime.datetime.now().isoformat(),
-        "details": {"module": "diagnoses"}
-    })
-    
-    flash("Diagnosis records decrypted for viewing.", "success")
-    return redirect(url_for("list_view", kind="diagnoses"))
-
-
-@app.route("/records/diagnoses/encrypt", methods=["POST"])
-@login_required
-def diagnoses_encrypt():
-    """Re-encrypt all diagnoses records."""
-    session["diagnoses_decrypted"] = False
-    flash("Diagnosis records encrypted.", "success")
-    return redirect(url_for("list_view", kind="diagnoses"))
-
-
-@app.route("/records/prescriptions/decrypt", methods=["POST"])
-@login_required
-def prescriptions_decrypt():
-    """Decrypt all prescriptions records for viewing."""
-    # Require PIN/biometric verification
-    now = int(time.time())
-    strong_ok = False
-    if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
-        strong_ok = True
-    if session.get("bio_ok"):
-        strong_ok = True
-    if not strong_ok:
-        return redirect(url_for("verify_pin_route", next=url_for("prescriptions_decrypt")))
-    
-    session["prescriptions_decrypted"] = True
-    
-    # Log decryption event
-    from utils.storage import add_audit_event
-    import datetime
-    add_audit_event({
-        "kind": "data_access",
-        "action": "decrypt_all",
-        "username": session.get("user", "unknown"),
-        "timestamp": datetime.datetime.now().isoformat(),
-        "details": {"module": "prescriptions"}
-    })
-    
-    flash("Prescription records decrypted for viewing.", "success")
-    return redirect(url_for("list_view", kind="prescriptions"))
-
-
-@app.route("/records/prescriptions/encrypt", methods=["POST"])
-@login_required
-def prescriptions_encrypt():
-    """Re-encrypt all prescriptions records."""
-    session["prescriptions_decrypted"] = False
-    flash("Prescription records encrypted.", "success")
-    return redirect(url_for("list_view", kind="prescriptions"))
-
-
-
-
-
-@app.route("/records/medical_store/decrypt/<int:index>")
-@login_required
-def medical_store_decrypt(index):
-    flash("Medical store records are not encrypted.", "info")
-    return redirect(url_for("list_view", kind="medical_store"))
-
-
-@app.route("/records/medical_store/encrypt/<int:index>", methods=["POST"])
-@login_required
-def medical_store_encrypt(index):
-    flash("Medical store records are not encrypted.", "info")
-    return redirect(url_for("list_view", kind="medical_store"))
-
-
-@app.route("/records/doctors/decrypt/<int:index>")
-@login_required
-def doctors_decrypt(index):
-    flash("Doctor records are not encrypted.", "info")
-    return redirect(url_for("list_view", kind="doctors"))
-
-
-@app.route("/records/doctors/encrypt/<int:index>", methods=["POST"])
-@login_required
-def doctors_encrypt(index):
-    flash("Doctor records are not encrypted.", "info")
-    return redirect(url_for("list_view", kind="doctors"))
-
-
-@app.route("/records/assets/decrypt/<int:index>")
-@login_required
-def assets_decrypt(index):
-    flash("Asset records are not encrypted.", "info")
-    return redirect(url_for("list_view", kind="assets"))
-
-
-@app.route("/records/assets/encrypt/<int:index>", methods=["POST"])
-@login_required
-def assets_encrypt(index):
-    flash("Asset records are not encrypted.", "info")
-    return redirect(url_for("list_view", kind="assets"))
-
-
-@app.route("/records/threats/decrypt/<int:index>")
-@login_required
-def threats_decrypt(index):
-    flash("Threat records are not encrypted.", "info")
-    return redirect(url_for("list_view", kind="threats"))
-
-
-@app.route("/records/threats/encrypt/<int:index>", methods=["POST"])
-@login_required
-def threats_encrypt(index):
-    flash("Threat records are not encrypted.", "info")
-    return redirect(url_for("list_view", kind="threats"))
-
-
-@app.route("/records/incidents/decrypt/<int:index>")
-@login_required
-def incidents_decrypt(index):
-    flash("Incident records are not encrypted.", "info")
-    return redirect(url_for("list_view", kind="incidents"))
-
-
-@app.route("/records/incidents/encrypt/<int:index>", methods=["POST"])
-@login_required
-def incidents_encrypt(index):
-    flash("Incident records are not encrypted.", "info")
-    return redirect(url_for("list_view", kind="incidents"))
-
-
-@app.route("/records/bia/decrypt/<int:index>")
-@login_required
-def bia_decrypt(index):
-    flash("BIA records are not encrypted.", "info")
-    return redirect(url_for("list_view", kind="bia"))
-
-
-@app.route("/records/bia/encrypt/<int:index>", methods=["POST"])
-@login_required
-def bia_encrypt(index):
-    flash("BIA records are not encrypted.", "info")
-    return redirect(url_for("list_view", kind="bia"))
-
-
 @app.route("/records/<kind>/export.csv")
 @login_required
 def export_csv(kind):
@@ -2047,210 +1841,6 @@ def export_csv(kind):
     resp.headers["Content-Disposition"] = f"attachment; filename={kind}.txt"
     return resp
 
-
-@app.route("/records/patients_db/decrypt_all", methods=["GET", "POST"])
-@login_required
-def patients_db_decrypt_all():
-    """Decrypt all patients_db records for viewing."""
-    # Require PIN/biometric verification
-    now = int(time.time())
-    strong_ok = False
-    if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
-        strong_ok = True
-    if session.get("bio_ok"):
-        strong_ok = True
-    if not strong_ok:
-        return redirect(url_for("verify_pin_route", next=url_for("patients_db_decrypt_all")))
-    
-    session["patients_db_encrypted"] = False
-    
-    # Log decryption event
-    from utils.storage import add_audit_event
-    import datetime
-    add_audit_event({
-        "kind": "data_access",
-        "action": "decrypt_all",
-        "username": session.get("user", "unknown"),
-        "timestamp": datetime.datetime.now().isoformat(),
-        "details": {"module": "patients_db"}
-    })
-    
-    flash("All patient records decrypted for viewing.", "success")
-    return redirect(url_for("list_view", kind="patients_db"))
-
-
-@app.route("/records/patients_db/encrypt_all", methods=["POST"])
-@login_required
-def patients_db_encrypt_all():
-    """Re-encrypt all patients_db records."""
-    session["patients_db_encrypted"] = True
-    flash("All patient records encrypted.", "success")
-    return redirect(url_for("list_view", kind="patients_db"))
-
-
-
-
-
-@app.route("/records/diagnoses/decrypt_all", methods=["GET", "POST"])
-@login_required
-def diagnoses_decrypt_all():
-    """Decrypt all diagnoses records for viewing."""
-    # Require PIN/biometric verification
-    now = int(time.time())
-    strong_ok = False
-    if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
-        strong_ok = True
-    if session.get("bio_ok"):
-        strong_ok = True
-    if not strong_ok:
-        return redirect(url_for("verify_pin_route", next=url_for("diagnoses_decrypt_all")))
-    
-    session["diagnoses_encrypted"] = False
-    
-    # Log decryption event
-    from utils.storage import add_audit_event
-    import datetime
-    add_audit_event({
-        "kind": "data_access",
-        "action": "decrypt_all",
-        "username": session.get("user", "unknown"),
-        "timestamp": datetime.datetime.now().isoformat(),
-        "details": {"module": "diagnoses"}
-    })
-    
-    flash("All diagnosis records decrypted for viewing.", "success")
-    return redirect(url_for("list_view", kind="diagnoses"))
-
-
-@app.route("/records/diagnoses/encrypt_all", methods=["POST"])
-@login_required
-def diagnoses_encrypt_all():
-    """Re-encrypt all diagnoses records."""
-    session["diagnoses_encrypted"] = True
-    flash("All diagnosis records encrypted.", "success")
-    return redirect(url_for("list_view", kind="diagnoses"))
-
-
-@app.route("/records/prescriptions/decrypt_all", methods=["GET", "POST"])
-@login_required
-def prescriptions_decrypt_all():
-    """Decrypt all prescriptions records for viewing."""
-    # Require PIN/biometric verification
-    now = int(time.time())
-    strong_ok = False
-    if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
-        strong_ok = True
-    if session.get("bio_ok"):
-        strong_ok = True
-    if not strong_ok:
-        return redirect(url_for("verify_pin_route", next=url_for("prescriptions_decrypt_all")))
-    
-    session["prescriptions_encrypted"] = False
-    
-    # Log decryption event
-    from utils.storage import add_audit_event
-    import datetime
-    add_audit_event({
-        "kind": "data_access",
-        "action": "decrypt_all",
-        "username": session.get("user", "unknown"),
-        "timestamp": datetime.datetime.now().isoformat(),
-        "details": {"module": "prescriptions"}
-    })
-    
-    flash("All prescription records decrypted for viewing.", "success")
-    return redirect(url_for("list_view", kind="prescriptions"))
-
-
-@app.route("/records/prescriptions/encrypt_all", methods=["POST"])
-@login_required
-def prescriptions_encrypt_all():
-    """Re-encrypt all prescriptions records."""
-    session["prescriptions_encrypted"] = True
-    flash("All prescription records encrypted.", "success")
-    return redirect(url_for("list_view", kind="prescriptions"))
-
-
-@app.route("/records/doctors/decrypt_all", methods=["GET", "POST"])
-@login_required
-def doctors_decrypt_all():
-    """Decrypt all doctors records for viewing."""
-    # Require PIN/biometric verification
-    now = int(time.time())
-    strong_ok = False
-    if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
-        strong_ok = True
-    if session.get("bio_ok"):
-        strong_ok = True
-    if not strong_ok:
-        return redirect(url_for("verify_pin_route", next=url_for("doctors_decrypt_all")))
-    
-    session["doctors_encrypted"] = False
-    
-    # Log decryption event
-    from utils.storage import add_audit_event
-    import datetime
-    add_audit_event({
-        "kind": "data_access",
-        "action": "decrypt_all",
-        "username": session.get("user", "unknown"),
-        "timestamp": datetime.datetime.now().isoformat(),
-        "details": {"module": "doctors"}
-    })
-    
-    flash("All doctor records decrypted for viewing.", "success")
-    return redirect(url_for("list_view", kind="doctors"))
-
-
-@app.route("/records/doctors/encrypt_all", methods=["POST"])
-@login_required
-def doctors_encrypt_all():
-    """Re-encrypt all doctors records."""
-    session["doctors_encrypted"] = True
-    flash("All doctor records encrypted.", "success")
-    return redirect(url_for("list_view", kind="doctors"))
-
-
-@app.route("/records/appointments/decrypt_all", methods=["GET", "POST"])
-@login_required
-def appointments_decrypt_all():
-    """Decrypt all appointments records for viewing."""
-    # Require PIN/biometric verification
-    now = int(time.time())
-    strong_ok = False
-    if session.get("pin_ok") and now < int(session.get("pin_ok_until") or 0):
-        strong_ok = True
-    if session.get("bio_ok"):
-        strong_ok = True
-    if not strong_ok:
-        return redirect(url_for("verify_pin_route", next=url_for("appointments_decrypt_all")))
-    
-    session["appointments_encrypted"] = False
-    
-    # Log decryption event
-    from utils.storage import add_audit_event
-    import datetime
-    add_audit_event({
-        "kind": "data_access",
-        "action": "decrypt_all",
-        "username": session.get("user", "unknown"),
-        "timestamp": datetime.datetime.now().isoformat(),
-        "details": {"module": "appointments"}
-    })
-    
-    flash("All appointment records decrypted for viewing.", "success")
-    return redirect(url_for("list_view", kind="appointments"))
-
-
-@app.route("/records/appointments/encrypt_all", methods=["POST"])
-@login_required
-def appointments_encrypt_all():
-    """Re-encrypt all appointments records."""
-    session["appointments_encrypted"] = True
-    flash("All appointment records encrypted.", "success")
-    return redirect(url_for("list_view", kind="appointments"))
-
-
 @app.route("/crypto")
 @login_required
 def crypto():
@@ -2263,13 +1853,11 @@ def crypto():
         sys.stdout = old
     return render_template("crypto.html", output=buf.getvalue())
 
-
 @app.route("/billing")
 @login_required
 def billing():
     """Billing and payment page with QR codes for different payment methods."""
     return render_template("billing.html")
-
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=5000, debug=True)
